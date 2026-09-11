@@ -10,7 +10,7 @@ Permite subir un Excel con los asientos, valida los datos y genera el archivo de
 - Validación contra el plan de cuentas real de Electro Universo (267 cuentas, sin exponer nombres/descripciones — solo códigos).
 - Determinación automática de ledgers/plan contable por el primer dígito del código de cuenta.
 
-El detalle completo del formato de entrada/salida está en [`Guia_Interpretacion_Input_Output_SAGE_ZXARGGAS.docx`](./Guia_Interpretacion_Input_Output_SAGE_ZXARGGAS.docx).
+El detalle completo del formato de entrada/salida está documentado en `Guia_Interpretacion_Input_Output_SAGE_ZXARGGAS.docx` — ese archivo es material de referencia local (ver "Nota sobre datos sensibles" más abajo) y no forma parte de este repo público.
 
 ## Stack
 
