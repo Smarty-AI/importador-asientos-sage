@@ -13,6 +13,7 @@ import { parseWorkbook, groupByAsiento } from "./parser.js";
 import { loadCatalog } from "./catalog.js";
 import { validateBatch } from "./validator.js";
 import { buildZxarggasFile } from "./sage-line-builder.js";
+import { buildTemplateWorkbook } from "./template-builder.js";
 
 /**
  * Pure helper — default batch-header configuration, confirmed 100% constant
@@ -49,6 +50,7 @@ function initApp() {
   const fileInput = document.getElementById("file-input");
   const previewBody = document.getElementById("preview-body");
   const downloadButton = document.getElementById("download-button");
+  const downloadTemplateButton = document.getElementById("download-template-button");
   const statusEl = document.getElementById("status-message");
   const batchForm = document.getElementById("batch-config-form");
 
@@ -86,6 +88,11 @@ function initApp() {
     const batchConfig = resolveBatchConfig(readFormValues(batchForm));
     const content = buildZxarggasFile(currentGroups, batchConfig, catalog);
     downloadTextFile(content, "zxarggas_export.txt");
+  });
+
+  downloadTemplateButton?.addEventListener("click", () => {
+    const workbook = buildTemplateWorkbook(window.XLSX);
+    downloadWorkbookFile(window.XLSX, workbook, "plantilla_asientos.xlsx");
   });
 }
 
@@ -140,6 +147,18 @@ function setStatus(el, message) {
 
 function downloadTextFile(content, filename) {
   const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+  downloadBlob(blob, filename);
+}
+
+function downloadWorkbookFile(XLSXLib, workbook, filename) {
+  const buffer = XLSXLib.write(workbook, { type: "array", bookType: "xlsx" });
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  downloadBlob(blob, filename);
+}
+
+function downloadBlob(blob, filename) {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;

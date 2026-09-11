@@ -22,6 +22,21 @@
     </header>
 
     <section class="bg-white rounded-lg shadow p-4 mb-6">
+      <h2 class="font-semibold mb-3">0. Descargar plantilla</h2>
+      <button
+        id="download-template-button"
+        class="inline-flex items-center gap-2 bg-slate-600 text-white font-medium px-4 py-2 rounded"
+      >
+        <i data-lucide="download"></i>
+        Descargar plantilla
+      </button>
+      <p class="text-xs text-slate-500 mt-2">
+        Descargá el Excel vacío con las columnas esperadas y completalo antes
+        de subirlo en el paso 1.
+      </p>
+    </section>
+
+    <section class="bg-white rounded-lg shadow p-4 mb-6">
       <h2 class="font-semibold mb-3">1. Subir Excel</h2>
       <input
         id="file-input"
@@ -37,28 +52,29 @@
       <form id="batch-config-form" class="grid grid-cols-2 md:grid-cols-5 gap-3 text-sm">
         <label class="flex flex-col gap-1">
           TYP
-          <input name="TYP" placeholder="AJU" class="border border-slate-300 rounded p-1" />
+          <input name="TYP" value="AJU" placeholder="AJU" class="border border-slate-300 rounded p-1" />
         </label>
         <label class="flex flex-col gap-1">
           FCY
-          <input name="FCY" placeholder="CEN" class="border border-slate-300 rounded p-1" />
+          <input name="FCY" value="CEN" placeholder="CEN" class="border border-slate-300 rounded p-1" />
         </label>
         <label class="flex flex-col gap-1">
           JOU
-          <input name="JOU" placeholder="ODG" class="border border-slate-300 rounded p-1" />
+          <input name="JOU" value="ODG" placeholder="ODG" class="border border-slate-300 rounded p-1" />
         </label>
         <label class="flex flex-col gap-1">
           DACDIA
-          <input name="DACDIA" placeholder="STDCO" class="border border-slate-300 rounded p-1" />
+          <input name="DACDIA" value="STDCO" placeholder="STDCO" class="border border-slate-300 rounded p-1" />
         </label>
         <label class="flex flex-col gap-1">
           CUR
-          <input name="CUR" placeholder="ARS" class="border border-slate-300 rounded p-1" />
+          <input name="CUR" value="ARS" placeholder="ARS" class="border border-slate-300 rounded p-1" />
         </label>
       </form>
       <p class="text-xs text-slate-500 mt-2">
-        Dejá los campos vacíos para usar los valores por defecto confirmados
-        (TYP=AJU, FCY=CEN, JOU=ODG, DACDIA=STDCO, CUR=ARS).
+        Los campos ya vienen precargados con los valores por defecto
+        confirmados (TYP=AJU, FCY=CEN, JOU=ODG, DACDIA=STDCO, CUR=ARS); podés
+        editarlos si necesitás otro valor.
       </p>
     </section>
 
