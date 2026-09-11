@@ -43,49 +43,57 @@ export function buildZxarggasFile(groups, batchConfig, _catalog) {
   return lines.join("\r\n") + "\r\n";
 }
 
+// "A" header line — 13 fields, per the ZXARGGAS field grid (Modelos import./export.,
+// table GACCENTRY) confirmed against the vendor mail and design-decisions #1297.
+// Each entry below is: [value] — FIELD_CODE ("field grid label"): what it holds here.
 function buildHeaderLine(group, batchConfig) {
   const firstLine = group.lines[0];
   const fields = [
-    batchConfig.TYP,
-    "", // NUM — always blank, SAGE assigns it on import
-    batchConfig.FCY,
-    batchConfig.JOU,
-    toAAAAMMDD(firstLine.fecha),
-    "", // DUDDAT — no due date for GL adjustment entries
-    firstLine.concepto ?? "",
-    "", // BPRVCR — no source voucher
-    "", // BPRDATVCR — no source voucher date
-    String(group.nAsiento),
-    batchConfig.CUR,
-    batchConfig.DACDIA,
-    FIXED_RATMLT,
+    batchConfig.TYP, // TYP ("Tipo asiento"): entry type, batch-fixed to "AJU"
+    "", // NUM ("Número de asiento"): always blank — SAGE's own counter assigns it on import
+    batchConfig.FCY, // FCY ("Planta"): site/plant, batch-fixed to "CEN"
+    batchConfig.JOU, // JOU ("Diario"): journal, batch-fixed to "ODG"
+    toAAAAMMDD(firstLine.fecha), // ACCDAT ("Fecha contable"): posting date, AAAAMMDD
+    "", // DUDDAT ("Fecha vencimiento"): due date — none for a GL adjustment entry
+    firstLine.concepto ?? "", // DESVCR ("Descripción"): entry description, from the row's Concepto
+    "", // BPRVCR ("Documento origen"): source voucher — none, no upstream document
+    "", // BPRDATVCR ("Fecha documento"): source voucher date — none, no upstream document
+    String(group.nAsiento), // REF ("Referencia"): internal "N° Asiento" used only to group rows
+    batchConfig.CUR, // CUR ("Divisa de asiento"): entry currency, batch-fixed to "ARS"
+    batchConfig.DACDIA, // DACDIA ("Transacción"): posting transaction, batch-fixed to "STDCO"
+    FIXED_RATMLT, // RATMLT ("Cambio multiplicador"): FX multiplier — fixed "1", single-currency entries only
   ];
   return "A;" + fields.join(";");
 }
 
+// "B" detail line — 12 fields, per the ZXARGGAS field grid (table GACCENTRYD).
+// One "B" line is emitted per ledger returned by ledger-rules.js for that
+// account (the same accounting line repeated once per ledger it posts to —
+// see design-decisions #1297 on why cuentas patrimoniales only need
+// ledgers 1,4,6 while cuentas de resultado also need 2,5 with COA=ARA).
 function buildDetailLines(group, batchConfig) {
   const detailLines = [];
 
   group.lines.forEach((line, index) => {
-    const lin = index + 1;
-    const idtlin = lin;
+    const lin = index + 1; // LIN ("Número de línea"): this row's position within the entry
+    const idtlin = lin; // IDTLIN ("Identificador"): ties this line's ledger repeats together — same value as LIN
     const mapping = getLedgerMapping(line.codigoCuenta);
     const { sns, amtcur } = deriveSnsAndAmount(line);
 
     for (const ledger of mapping.ledgers) {
       const fields = [
         lin,
-        ledger,
+        ledger, // LEDTYP ("Tipo de referencia"): ledger code this repeat posts to (1/2/4/5/6)
         idtlin,
-        batchConfig.FCY,
-        mapping.coaByLedger[ledger],
-        "", // SAC — always blank
-        line.codigoCuenta,
-        "", // BPR — always blank
-        line.concepto ?? "",
-        sns,
-        amtcur,
-        batchConfig.CUR,
+        batchConfig.FCY, // FCYLIN ("Planta"): site/plant, same as the header FCY
+        mapping.coaByLedger[ledger], // COA ("Código plan"): chart of accounts for this ledger — ARG or ARA
+        "", // SAC ("Cta. ctrl."): control-account/tercero code — always blank (no-tercero test)
+        line.codigoCuenta, // ACC ("Cuentas generales"): the actual account code being posted
+        "", // BPR ("Tercero"): business-partner code — always blank (no-tercero test)
+        line.concepto ?? "", // DES ("Descripción"): line description, from the row's Concepto
+        sns, // SNS ("Signo"): +1 debe / -1 haber
+        amtcur, // AMTCUR ("Importe asiento"): absolute amount for this line
+        batchConfig.CUR, // CUR ("Divisa de asiento"): line currency, batch-fixed to "ARS"
       ];
       detailLines.push("B;" + fields.join(";"));
     }
