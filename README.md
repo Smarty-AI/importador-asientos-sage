@@ -10,8 +10,6 @@ Permite subir un Excel con los asientos, valida los datos y genera el archivo de
 - Validación contra el plan de cuentas real de Electro Universo (267 cuentas, sin exponer nombres/descripciones — solo códigos).
 - Determinación automática de ledgers/plan contable por el primer dígito del código de cuenta.
 
-El detalle completo del formato de entrada/salida está documentado en `Guia_Interpretacion_Input_Output_SAGE_ZXARGGAS.docx` — ese archivo es material de referencia local (ver "Nota sobre datos sensibles" más abajo) y no forma parte de este repo público.
-
 ## Stack
 
 HTML + CSS + JavaScript vanilla, sin build step para el sitio publicado. SheetJS (vendorizado) para leer el Excel, Tailwind CSS para estilos, Lucide para íconos. Tests con Vitest sobre los módulos de lógica pura.
@@ -56,7 +54,7 @@ npm run generate-catalog
 
 ## Deploy en GitHub Pages
 
-1. Confirmar que el repo es público (requisito de GitHub Pages gratis) y que `sage/` y el `.docx` NO están trackeados (ver nota abajo).
+1. Confirmar que el repo es público (requisito de GitHub Pages gratis) y que `sage/` NO está trackeada (ver nota abajo).
 2. En GitHub: **Settings → Pages**.
 3. En **Source**, elegir **Deploy from a branch**.
 4. Elegir la rama `main` y la carpeta `/docs`.
@@ -65,4 +63,4 @@ npm run generate-catalog
 
 ## Nota sobre datos sensibles
 
-La carpeta `sage/` (mails, exports reales de SAGE, plan de cuentas completo) y la guía `.docx` contienen datos reales de Electro Universo y están **excluidos del repo** (`.gitignore`) porque este repo es público (requisito de GitHub Pages gratis). Existen solo en el entorno local de desarrollo — se usan para generar `data/chart-of-accounts.json` (que sí se publica, sin descripciones ni datos sensibles) pero nunca se suben al repo.
+La carpeta `sage/` contiene material de referencia interno de Electro Universo y está **excluida del repo** (`.gitignore`) porque este repo es público (requisito de GitHub Pages gratis). Existe solo en el entorno local de desarrollo — se usa para generar `data/chart-of-accounts.json` (que sí se publica, sin descripciones ni datos sensibles) pero nunca se sube al repo.
