@@ -1,0 +1,1604 @@
+[
+  {
+    "cuenta": "11010001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": "CAJ",
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11010002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "USD"
+  },
+  {
+    "cuenta": "11010003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": "VAD",
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11010004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11010005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11010006",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "USD"
+  },
+  {
+    "cuenta": "11010007",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11010008",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11010009",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11010010",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "USD"
+  },
+  {
+    "cuenta": "11010011",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11010012",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11010013",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11010014",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11010015",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11010020",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11020001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11020002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11020003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11020004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11020005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11020006",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11020020",
+    "codigoPlan": "ARG",
+    "codigoLlamada": "DPV",
+    "div": null
+  },
+  {
+    "cuenta": "11020021",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11020022",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11020023",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11030001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11030002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11030003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "USD"
+  },
+  {
+    "cuenta": "11040001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040010",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040011",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040012",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040013",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040014",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040015",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040016",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040017",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040018",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040019",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040020",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040021",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040022",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040023",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040024",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040025",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040026",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040027",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040028",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040029",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040030",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040031",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040032",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040033",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040040",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040041",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040042",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040043",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040044",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040045",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040046",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040047",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040048",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040049",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040050",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040051",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040052",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040053",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040054",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040055",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040056",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040057",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040058",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040059",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040060",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040061",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040062",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040063",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040066",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040067",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040070",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040080",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "11040081",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040082",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040083",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040084",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040085",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040090",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040091",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040092",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040093",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040094",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040095",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11040096",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11050001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11050002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11050003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11050004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11050005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11060001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11060002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "11060003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12030001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150006",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150007",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150008",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150009",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150010",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150011",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150012",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150013",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150014",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150015",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150016",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150017",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "12150018",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21010001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": "PRV",
+    "div": null
+  },
+  {
+    "cuenta": "21010002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": "CHD",
+    "div": null
+  },
+  {
+    "cuenta": "21010003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": "TAR",
+    "div": null
+  },
+  {
+    "cuenta": "21010004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21010005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": "ANP",
+    "div": null
+  },
+  {
+    "cuenta": "21020001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21020002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21020003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21020004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21020005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21020006",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21020007",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21020008",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21030001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21030002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21030003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21030004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21030005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21030006",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21030007",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21030008",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21030009",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21030010",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21040001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21050001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21050002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21050003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21050004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21060001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21060002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21070001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21080001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21080002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "21080003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "22020001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "22020002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "22030001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "22040001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "22070001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "31010001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "31010002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "31010003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "31010004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "31010005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "31010006",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "31010007",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "31010008",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "41010001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "41010002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "41010003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "41020001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "41020002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "41020003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "41030001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "41030002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "41030003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "41030004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "43040105",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51010001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51020001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51020002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51020003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51020004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51020005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51020006",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51020007",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51030001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51030002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51030003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51030004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51030005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51040001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51040002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51040003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51040004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51040005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51040006",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050006",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050007",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050008",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050009",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050010",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050011",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050012",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050013",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050014",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050015",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050016",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050017",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "51050018",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050019",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050020",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050021",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050022",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050023",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050024",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51050025",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51060001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51060002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51060003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51060004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51060005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "51070001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51070002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51070003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51070004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51070005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51070006",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51070007",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51080001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51080002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51080003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51080004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51080005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": "ARS"
+  },
+  {
+    "cuenta": "51090001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51090002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51090003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51090004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51090005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51090006",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51100001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51110001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51110002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51120001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51120002",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51120003",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51120004",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51120005",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "51130001",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "888888881",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "888888882",
+    "codigoPlan": "ARG",
+    "codigoLlamada": "VMC",
+    "div": null
+  },
+  {
+    "cuenta": "888888883",
+    "codigoPlan": "ARG",
+    "codigoLlamada": "VMP",
+    "div": null
+  },
+  {
+    "cuenta": "888888884",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "888888885",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "888888886",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "888888887",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  },
+  {
+    "cuenta": "888888888",
+    "codigoPlan": "ARG",
+    "codigoLlamada": null,
+    "div": null
+  }
+]
