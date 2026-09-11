@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Importador de Asientos SAGE X3 — ZXARGGAS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="vendor/xlsx.full.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+  <div class="max-w-5xl mx-auto px-4 py-8">
+    <header class="mb-6">
+      <h1 class="text-2xl font-bold flex items-center gap-2">
+        <i data-lucide="file-spreadsheet"></i>
+        Importador de Asientos SAGE X3 (ZXARGGAS)
+      </h1>
+      <p class="text-slate-600 mt-1">
+        Subí el Excel de asientos de ajuste, revisá la vista previa y descargá
+        el archivo listo para importar en SAGE X3 (modelo ZXARGGAS).
+      </p>
+    </header>
+
+    <section class="bg-white rounded-lg shadow p-4 mb-6">
+      <h2 class="font-semibold mb-3">1. Subir Excel</h2>
+      <input
+        id="file-input"
+        type="file"
+        accept=".xlsx,.xls"
+        class="block w-full text-sm border border-slate-300 rounded p-2"
+      />
+      <p id="status-message" class="text-sm text-slate-600 mt-2"></p>
+    </section>
+
+    <section class="bg-white rounded-lg shadow p-4 mb-6">
+      <h2 class="font-semibold mb-3">2. Configuración de cabecera del lote</h2>
+      <form id="batch-config-form" class="grid grid-cols-2 md:grid-cols-5 gap-3 text-sm">
+        <label class="flex flex-col gap-1">
+          TYP
+          <input name="TYP" placeholder="AJU" class="border border-slate-300 rounded p-1" />
+        </label>
+        <label class="flex flex-col gap-1">
+          FCY
+          <input name="FCY" placeholder="CEN" class="border border-slate-300 rounded p-1" />
+        </label>
+        <label class="flex flex-col gap-1">
+          JOU
+          <input name="JOU" placeholder="ODG" class="border border-slate-300 rounded p-1" />
+        </label>
+        <label class="flex flex-col gap-1">
+          DACDIA
+          <input name="DACDIA" placeholder="STDCO" class="border border-slate-300 rounded p-1" />
+        </label>
+        <label class="flex flex-col gap-1">
+          CUR
+          <input name="CUR" placeholder="ARS" class="border border-slate-300 rounded p-1" />
+        </label>
+      </form>
+      <p class="text-xs text-slate-500 mt-2">
+        Dejá los campos vacíos para usar los valores por defecto confirmados
+        (TYP=AJU, FCY=CEN, JOU=ODG, DACDIA=STDCO, CUR=ARS).
+      </p>
+    </section>
+
+    <section class="bg-white rounded-lg shadow p-4 mb-6 overflow-x-auto">
+      <h2 class="font-semibold mb-3">3. Vista previa</h2>
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="text-left border-b border-slate-200">
+            <th class="px-2 py-1">N° Asiento</th>
+            <th class="px-2 py-1">Fecha</th>
+            <th class="px-2 py-1">Concepto</th>
+            <th class="px-2 py-1">Código Cuenta</th>
+            <th class="px-2 py-1">Denominación de Cuenta</th>
+            <th class="px-2 py-1">Debe</th>
+            <th class="px-2 py-1">Haber</th>
+          </tr>
+        </thead>
+        <tbody id="preview-body"></tbody>
+      </table>
+    </section>
+
+    <section class="bg-white rounded-lg shadow p-4">
+      <h2 class="font-semibold mb-3">4. Descargar</h2>
+      <button
+        id="download-button"
+        disabled
+        class="inline-flex items-center gap-2 bg-blue-600 disabled:bg-slate-300 text-white font-medium px-4 py-2 rounded"
+      >
+        <i data-lucide="download"></i>
+        Descargar archivo ZXARGGAS
+      </button>
+      <p class="text-xs text-slate-500 mt-2">
+        El botón se habilita cuando no quedan errores bloqueantes en la vista
+        previa (las advertencias no bloquean la descarga).
+      </p>
+    </section>
+  </div>
+
+  <script type="module" src="src/ui.js"></script>
+  <script>
+    if (window.lucide) window.lucide.createIcons();
+  </script>
+</body>
+</html>
