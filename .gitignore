@@ -1,0 +1,5 @@
+.atl/
+node_modules/
+package-lock.json
+*.log
+.DS_Store
