@@ -1,0 +1,16 @@
+{
+  "name": "importador-sage-zxarggas",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Importador de asientos de ajuste SAGE X3 (formato ZXARGGAS) - sitio estatico para GitHub Pages",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "generate-catalog": "node scripts/generate-catalog.mjs"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.9",
+    "xlsx": "^0.18.5"
+  }
+}
