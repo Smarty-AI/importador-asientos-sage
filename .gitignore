@@ -3,3 +3,8 @@ node_modules/
 package-lock.json
 *.log
 .DS_Store
+
+# Material de referencia con datos reales/sensibles de Electro Universo:
+# se usa localmente para desarrollo, nunca se sube al repo publico.
+/sage/
+/Guia_Interpretacion_Input_Output_SAGE_ZXARGGAS.docx

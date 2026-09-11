@@ -32,3 +32,7 @@ sage/                     # material de referencia (mails, muestras reales de SA
 ## Desarrollo
 
 Proyecto en construcción vía SDD (Spec-Driven Development). El detalle de decisiones de diseño y reglas de negocio vive en Engram, no en este archivo.
+
+## Nota sobre datos sensibles
+
+La carpeta `sage/` (mails, exports reales de SAGE, plan de cuentas completo) y la guía `.docx` contienen datos reales de Electro Universo y están **excluidos del repo** (`.gitignore`) porque este repo es público (requisito de GitHub Pages gratis). Existen solo en el entorno local de desarrollo — se usan para generar `data/chart-of-accounts.json` (que sí se publica, sin descripciones ni datos sensibles) pero nunca se suben al repo.
