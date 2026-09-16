@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import XLSX from "xlsx";
-import { parseWorkbook, groupByAsiento } from "../docs/src/parser.js";
+import { parseWorkbook, groupByOrden } from "../docs/src/parser.js";
 
 // `parser.js` never imports an XLSX library itself (no bundler, no global
 // assumptions) — it receives the library as an explicit dependency, matching
@@ -14,7 +14,7 @@ function buildWorkbookArrayBuffer(rows) {
 }
 
 const HEADER = [
-  "N° Asiento",
+  "N° Orden",
   "Fecha",
   "Concepto",
   "Código Cuenta",
@@ -35,7 +35,7 @@ describe("parseWorkbook", () => {
 
     expect(rows).toHaveLength(2);
     expect(rows[0]).toMatchObject({
-      nAsiento: 1,
+      nOrden: 1,
       concepto: "Ajuste caja",
       codigoCuenta: "11010001",
       denominacionCuenta: "Caja Tesoreria",
@@ -56,31 +56,31 @@ describe("parseWorkbook", () => {
   });
 });
 
-describe("groupByAsiento", () => {
-  it("groups multiple lines sharing the same N° Asiento into one entry", () => {
+describe("groupByOrden", () => {
+  it("groups multiple lines sharing the same N° Orden into one entry", () => {
     const rows = [
-      { nAsiento: 1, codigoCuenta: "11010001", debe: 1000, haber: null },
-      { nAsiento: 1, codigoCuenta: "21010001", debe: null, haber: 1000 },
-      { nAsiento: 2, codigoCuenta: "11010002", debe: 500, haber: null },
+      { nOrden: 1, codigoCuenta: "11010001", debe: 1000, haber: null },
+      { nOrden: 1, codigoCuenta: "21010001", debe: null, haber: 1000 },
+      { nOrden: 2, codigoCuenta: "11010002", debe: 500, haber: null },
     ];
 
-    const groups = groupByAsiento(rows);
+    const groups = groupByOrden(rows);
 
     expect(groups).toHaveLength(2);
-    expect(groups[0]).toEqual({ nAsiento: 1, lines: [rows[0], rows[1]] });
-    expect(groups[1]).toEqual({ nAsiento: 2, lines: [rows[2]] });
+    expect(groups[0]).toEqual({ nOrden: 1, lines: [rows[0], rows[1]] });
+    expect(groups[1]).toEqual({ nOrden: 2, lines: [rows[2]] });
   });
 
   it("preserves insertion order of first appearance across non-contiguous rows", () => {
     const rows = [
-      { nAsiento: 2, codigoCuenta: "A", debe: 1, haber: null },
-      { nAsiento: 1, codigoCuenta: "B", debe: 2, haber: null },
-      { nAsiento: 2, codigoCuenta: "C", debe: null, haber: 1 },
+      { nOrden: 2, codigoCuenta: "A", debe: 1, haber: null },
+      { nOrden: 1, codigoCuenta: "B", debe: 2, haber: null },
+      { nOrden: 2, codigoCuenta: "C", debe: null, haber: 1 },
     ];
 
-    const groups = groupByAsiento(rows);
+    const groups = groupByOrden(rows);
 
-    expect(groups.map((g) => g.nAsiento)).toEqual([2, 1]);
+    expect(groups.map((g) => g.nOrden)).toEqual([2, 1]);
     expect(groups[0].lines).toHaveLength(2);
   });
 });

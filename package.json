@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Importador de asientos de ajuste SAGE X3 (formato ZXARGGAS) - sitio estatico para GitHub Pages",
+  "description": "Importador de asientos SAGE X3 (formato ZXARGGAS) - sitio estatico para GitHub Pages",
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",

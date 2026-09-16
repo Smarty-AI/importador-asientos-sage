@@ -7,7 +7,7 @@
  * (`docs/vendor/xlsx.full.min.js`, wired by `ui.js`).
  *
  * @typedef {{
- *   nAsiento: string|number,
+ *   nOrden: string|number,
  *   fecha: unknown,
  *   concepto: string,
  *   codigoCuenta: string,
@@ -16,11 +16,11 @@
  *   haber: number|null,
  * }} RawRow
  *
- * @typedef {{ nAsiento: string|number, lines: RawRow[] }} AsientoGroup
+ * @typedef {{ nOrden: string|number, lines: RawRow[] }} OrdenGroup
  */
 
 const HEADER_MAP = {
-  "N° Asiento": "nAsiento",
+  "N° Orden": "nOrden",
   Fecha: "fecha",
   Concepto: "concepto",
   "Código Cuenta": "codigoCuenta",
@@ -55,19 +55,19 @@ function toRawRow(record) {
 
 /**
  * @param {RawRow[]} rows
- * @returns {AsientoGroup[]}
+ * @returns {OrdenGroup[]}
  */
-export function groupByAsiento(rows) {
-  /** @type {Map<string, AsientoGroup>} */
+export function groupByOrden(rows) {
+  /** @type {Map<string, OrdenGroup>} */
   const groupsByKey = new Map();
-  /** @type {AsientoGroup[]} */
+  /** @type {OrdenGroup[]} */
   const orderedGroups = [];
 
   for (const row of rows) {
-    const key = String(row.nAsiento);
+    const key = String(row.nOrden);
     let group = groupsByKey.get(key);
     if (!group) {
-      group = { nAsiento: row.nAsiento, lines: [] };
+      group = { nOrden: row.nOrden, lines: [] };
       groupsByKey.set(key, group);
       orderedGroups.push(group);
     }

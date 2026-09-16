@@ -8,7 +8,7 @@ import { buildTemplateWorkbook } from "../docs/src/template-builder.js";
 // package; the browser uses the vendored `window.XLSX` at runtime.
 
 const EXPECTED_HEADER = [
-  "N° Asiento",
+  "N° Orden",
   "Fecha",
   "Concepto",
   "Código Cuenta",

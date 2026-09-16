@@ -14,7 +14,7 @@
  * `FCYLIN`) are filled with the most literal reading of the SAGE field guide
  * for a GL-to-GL adjustment entry with no source voucher/tercero: no due
  * date, no source-voucher reference/date, a fixed exchange-rate multiplier
- * of 1 (single currency, no FX), the internal "N° Asiento" as the entry
+ * of 1 (single currency, no FX), the internal "N° Orden" as the entry
  * REF, the row's own Concepto as the line DES, and a per-line sequential
  * LIN/IDTLIN (constant across that line's ledger repeats). This is a
  * disclosed assumption, not a silently invented rule — flag for user
@@ -26,7 +26,7 @@ import { getLedgerMapping } from "./ledger-rules.js";
 const FIXED_RATMLT = "1";
 
 /**
- * @param {import("./parser.js").AsientoGroup[]} groups
+ * @param {import("./parser.js").OrdenGroup[]} groups
  * @param {{ TYP: string, FCY: string, JOU: string, DACDIA: string, CUR: string }} batchConfig
  * @param {import("./catalog.js").Catalog} _catalog unused for output — SAC/BPR are always
  *   blank by deliberate business decision; kept for interface parity with design.md
@@ -58,7 +58,7 @@ function buildHeaderLine(group, batchConfig) {
     firstLine.concepto ?? "", // DESVCR ("Descripción"): entry description, from the row's Concepto
     "", // BPRVCR ("Documento origen"): source voucher — none, no upstream document
     "", // BPRDATVCR ("Fecha documento"): source voucher date — none, no upstream document
-    String(group.nAsiento), // REF ("Referencia"): internal "N° Asiento" used only to group rows
+    String(group.nOrden), // REF ("Referencia"): N° Orden (agrupador interno, va a REF), used only to group rows
     batchConfig.CUR, // CUR ("Divisa de asiento"): entry currency, batch-fixed to "ARS"
     batchConfig.DACDIA, // DACDIA ("Transacción"): posting transaction, batch-fixed to "STDCO"
     FIXED_RATMLT, // RATMLT ("Cambio multiplicador"): FX multiplier — fixed "1", single-currency entries only

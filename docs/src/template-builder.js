@@ -6,12 +6,12 @@
  * package (tests) or the vendored `window.XLSX` (`ui.js`, browser).
  *
  * Header order matches the confirmed input template columns
- * (design-decisions #1297, point 2): `N° Asiento`, `Fecha`, `Concepto`,
+ * (design-decisions #1297, point 2): `N° Orden`, `Fecha`, `Concepto`,
  * `Código Cuenta`, `Denominación de Cuenta`, `Debe`, `Haber`.
  */
 
 export const TEMPLATE_HEADER = [
-  "N° Asiento",
+  "N° Orden",
   "Fecha",
   "Concepto",
   "Código Cuenta",

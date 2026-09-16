@@ -7,8 +7,8 @@ const CATALOG = loadCatalog([
   { cuenta: "21010009", codigoPlan: "ARG", codigoLlamada: null, div: "ARS" }, // no tercero, known
 ]);
 
-function group(nAsiento, lines) {
-  return { nAsiento, lines: lines.map((line) => ({ nAsiento, ...line })) };
+function group(nOrden, lines) {
+  return { nOrden, lines: lines.map((line) => ({ nOrden, ...line })) };
 }
 
 function validLine(overrides = {}) {
@@ -38,7 +38,7 @@ describe("validateBatch — blocking errors", () => {
     const { errors } = validateBatch(groups, CATALOG);
 
     expect(errors).toHaveLength(1);
-    expect(errors[0]).toMatchObject({ nAsiento: 1 });
+    expect(errors[0]).toMatchObject({ nOrden: 1 });
   });
 
   it("errors when neither Debe nor Haber are populated", () => {
@@ -49,12 +49,12 @@ describe("validateBatch — blocking errors", () => {
     expect(errors).toHaveLength(1);
   });
 
-  it("errors when N° Asiento is blank", () => {
-    const groups = [group("", [validLine({ nAsiento: "" })])];
+  it("errors when N° Orden is blank", () => {
+    const groups = [group("", [validLine({ nOrden: "" })])];
 
     const { errors } = validateBatch(groups, CATALOG);
 
-    expect(errors.some((e) => e.field === "nAsiento")).toBe(true);
+    expect(errors.some((e) => e.field === "nOrden")).toBe(true);
   });
 
   it("errors when Fecha is invalid", () => {

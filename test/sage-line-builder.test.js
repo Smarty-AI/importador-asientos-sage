@@ -7,10 +7,10 @@ describe("buildZxarggasFile", () => {
   it("builds one A header line and repeated B lines per ledger, CRLF-joined", () => {
     const groups = [
       {
-        nAsiento: 1,
+        nOrden: 1,
         lines: [
           {
-            nAsiento: 1,
+            nOrden: 1,
             fecha: "2026-01-15",
             concepto: "Ajuste de caja",
             codigoCuenta: "11010001",
@@ -18,7 +18,7 @@ describe("buildZxarggasFile", () => {
             haber: null,
           },
           {
-            nAsiento: 1,
+            nOrden: 1,
             fecha: "2026-01-15",
             concepto: "Ajuste de caja",
             codigoCuenta: "21010001",
@@ -47,10 +47,10 @@ describe("buildZxarggasFile", () => {
   it("NUM is always blank and SAC/BPR are always blank regardless of account", () => {
     const groups = [
       {
-        nAsiento: 7,
+        nOrden: 7,
         lines: [
           {
-            nAsiento: 7,
+            nOrden: 7,
             fecha: "2026-02-01",
             concepto: "Cierre",
             codigoCuenta: "11010001", // one of the 9 tercero-required accounts
@@ -77,10 +77,10 @@ describe("buildZxarggasFile", () => {
   it("expands a 4/5-prefix account into 5 ledgers with the ARG/ARA split", () => {
     const groups = [
       {
-        nAsiento: 2,
+        nOrden: 2,
         lines: [
           {
-            nAsiento: 2,
+            nOrden: 2,
             fecha: "2026-01-20",
             concepto: "Gasto de ajuste",
             codigoCuenta: "41010001",

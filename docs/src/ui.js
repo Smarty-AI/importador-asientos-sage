@@ -9,7 +9,7 @@
  * `test/ui-helpers.test.js`.
  */
 
-import { parseWorkbook, groupByAsiento } from "./parser.js";
+import { parseWorkbook, groupByOrden } from "./parser.js";
 import { loadCatalog } from "./catalog.js";
 import { validateBatch } from "./validator.js";
 import { buildZxarggasFile } from "./sage-line-builder.js";
@@ -73,7 +73,7 @@ function initApp() {
 
     const buffer = await file.arrayBuffer();
     const rows = parseWorkbook(buffer, window.XLSX);
-    currentGroups = groupByAsiento(rows);
+    currentGroups = groupByOrden(rows);
     currentIssues = validateBatch(currentGroups, catalog);
 
     renderPreview(previewBody, currentGroups, currentIssues);
@@ -106,14 +106,14 @@ function renderPreview(tbody, groups, issues) {
   if (!tbody) return;
   tbody.innerHTML = "";
 
-  const errorAsientos = new Set(issues.errors.map((e) => String(e.nAsiento)));
-  const warningAsientos = new Set(issues.warnings.map((w) => String(w.nAsiento)));
+  const errorOrdens = new Set(issues.errors.map((e) => String(e.nOrden)));
+  const warningOrdens = new Set(issues.warnings.map((w) => String(w.nOrden)));
 
   for (const group of groups) {
     for (const line of group.lines) {
       const row = document.createElement("tr");
-      const hasError = errorAsientos.has(String(group.nAsiento));
-      const hasWarning = warningAsientos.has(String(group.nAsiento));
+      const hasError = errorOrdens.has(String(group.nOrden));
+      const hasWarning = warningOrdens.has(String(group.nOrden));
       row.className = hasError
         ? "bg-red-100"
         : hasWarning
@@ -121,7 +121,7 @@ function renderPreview(tbody, groups, issues) {
         : "";
 
       row.innerHTML = `
-        <td class="px-2 py-1">${escapeHtml(group.nAsiento)}</td>
+        <td class="px-2 py-1">${escapeHtml(group.nOrden)}</td>
         <td class="px-2 py-1">${escapeHtml(line.fecha)}</td>
         <td class="px-2 py-1">${escapeHtml(line.concepto)}</td>
         <td class="px-2 py-1">${escapeHtml(line.codigoCuenta)}</td>
