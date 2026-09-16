@@ -105,17 +105,31 @@
 
     <section class="bg-white rounded-lg shadow p-4">
       <h2 class="font-semibold mb-3">4. Descargar</h2>
-      <button
-        id="download-button"
-        disabled
-        class="inline-flex items-center gap-2 bg-blue-600 disabled:bg-slate-300 text-white font-medium px-4 py-2 rounded"
-      >
-        <i data-lucide="download"></i>
-        Descargar archivo ZXARGGAS
-      </button>
+      <div class="flex flex-wrap gap-3">
+        <button
+          id="download-button"
+          disabled
+          class="inline-flex items-center gap-2 bg-blue-600 disabled:bg-slate-300 text-white font-medium px-4 py-2 rounded"
+        >
+          <i data-lucide="download"></i>
+          Descargar archivo ZXARGGAS
+        </button>
+        <button
+          id="download-errors-button"
+          disabled
+          class="inline-flex items-center gap-2 bg-amber-600 disabled:bg-slate-300 text-white font-medium px-4 py-2 rounded"
+        >
+          <i data-lucide="download"></i>
+          Descargar Excel con errores
+        </button>
+      </div>
       <p class="text-xs text-slate-500 mt-2">
         El botón se habilita cuando no quedan errores bloqueantes en la vista
         previa (las advertencias no bloquean la descarga).
+      </p>
+      <p class="text-xs text-slate-500 mt-1">
+        El Excel con errores incluye una columna "Errores" con el detalle por
+        fila: corregilo y volvé a subirlo sin quitar esa columna.
       </p>
     </section>
   </div>

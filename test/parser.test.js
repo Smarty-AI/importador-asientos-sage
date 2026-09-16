@@ -168,3 +168,90 @@ describe("parseWorkbook — named guards", () => {
     expect(() => parseWorkbook(buffer, XLSX)).toThrow(/fila|row/i);
   });
 });
+
+describe("parseWorkbook — Errores column tolerance (resubmittable error workbook)", () => {
+  it("ignores a trailing Errores column instead of rejecting the file", () => {
+    const buffer = buildWorkbookArrayBuffer([
+      [...HEADER, "Errores"],
+      [1, "2026-01-15", "Ajuste caja", "11010001", "Caja Tesoreria", 1000, null, "Fecha inválida"],
+      [1, "2026-01-15", "Ajuste caja", "21010001", "Proveedores", null, 1000, ""],
+    ]);
+
+    const rows = parseWorkbook(buffer, XLSX);
+
+    expect(rows).toHaveLength(2);
+    expect(rows[0]).toMatchObject({ nOrden: 1, concepto: "Ajuste caja", debe: 1000 });
+    // The Errores payload never leaks into the domain object...
+    expect(rows[0]).not.toHaveProperty("Errores");
+    expect(rows[0]).not.toHaveProperty("errores");
+    // ...and grouping still works.
+    expect(groupByOrden(rows)).toHaveLength(1);
+  });
+
+  it("tolerates case/whitespace variants of the Errores header", () => {
+    for (const erroresHeader of ["ERRORES", " errores ", "  Errores  "]) {
+      const buffer = buildWorkbookArrayBuffer([
+        [...HEADER, erroresHeader],
+        [2, "2026-01-16", "Ajuste banco", "11010002", "Banco", 500, null, "algo"],
+      ]);
+
+      const rows = parseWorkbook(buffer, XLSX);
+
+      expect(rows).toHaveLength(1);
+      expect(rows[0].nOrden).toBe(2);
+    }
+  });
+
+  it("still maps data columns when expected headers vary in case/spacing", () => {
+    const buffer = buildWorkbookArrayBuffer([
+      ["N° Orden", "  fecha ", "CONCEPTO", "Código Cuenta", "Denominación de Cuenta", "DEBE", "haber"],
+      [3, "2026-01-17", "Mixto", "11010003", "Caja 3", 700, null],
+    ]);
+
+    const rows = parseWorkbook(buffer, XLSX);
+
+    expect(rows[0]).toMatchObject({
+      nOrden: 3,
+      concepto: "Mixto",
+      codigoCuenta: "11010003",
+      debe: 700,
+    });
+  });
+});
+
+describe("checkHeaders — Errores tolerance", () => {
+  it("returns ok when the only extra column is Errores", () => {
+    const result = checkHeaders([...EXPECTED_HEADERS, "Errores"]);
+
+    expect(result.ok).toBe(true);
+    expect(result.missing).toEqual([]);
+    expect(result.unexpected).toEqual([]);
+  });
+
+  it("returns ok for case/whitespace variants of Errores", () => {
+    expect(checkHeaders([...EXPECTED_HEADERS, "ERRORES"]).ok).toBe(true);
+    expect(checkHeaders([...EXPECTED_HEADERS, " errores "]).ok).toBe(true);
+  });
+
+  it("still flags a genuinely unexpected column next to Errores", () => {
+    const result = checkHeaders([...EXPECTED_HEADERS, "Errores", "Extra"]);
+
+    expect(result.ok).toBe(false);
+    expect(result.unexpected).toContain("Extra");
+    expect(result.unexpected).not.toContain("Errores");
+  });
+
+  it("still flags a missing expected column even with Errores present", () => {
+    const received = [...EXPECTED_HEADERS.filter((h) => h !== "Debe"), "Errores"];
+    const result = checkHeaders(received);
+
+    expect(result.ok).toBe(false);
+    expect(result.missing).toContain("Debe");
+  });
+
+  it("compares expected headers case/whitespace-insensitively", () => {
+    const received = EXPECTED_HEADERS.map((h) => `  ${h.toLowerCase()}  `);
+
+    expect(checkHeaders(received).ok).toBe(true);
+  });
+});

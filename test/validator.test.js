@@ -117,13 +117,24 @@ describe("validateBatch — non-blocking warnings", () => {
     expect(warnings.some((w) => w.message.toLowerCase().includes("tercero"))).toBe(true);
   });
 
-  it("warns (does not error) on an unexpected account prefix", () => {
-    const groups = [group(1, [validLine({ codigoCuenta: "31010001" })])];
+  it("warns (does not error) on an unexpected account prefix and mentions the ARA analytic axis", () => {
+    const groups = [group(1, [validLine({ codigoCuenta: "61010001" })])];
 
     const { errors, warnings } = validateBatch(groups, CATALOG);
 
     expect(errors).toEqual([]);
-    expect(warnings.some((w) => w.message.toLowerCase().includes("prefijo"))).toBe(true);
+    const prefixWarning = warnings.find((w) => w.message.toLowerCase().includes("prefijo"));
+    expect(prefixWarning).toBeDefined();
+    expect(prefixWarning.message).toContain("emitirá ledgers ARA (2/5)");
+  });
+
+  it("does not warn on prefix 3 (patrimonio neto, e.g. 31010008) since it maps to ARG-only ledgers", () => {
+    const groups = [group(1, [validLine({ codigoCuenta: "31010008" })])];
+
+    const { errors, warnings } = validateBatch(groups, CATALOG);
+
+    expect(errors).toEqual([]);
+    expect(warnings.some((w) => w.message.toLowerCase().includes("prefijo"))).toBe(false);
   });
 
   it("allows export (no errors) for a batch with only warnings", () => {
