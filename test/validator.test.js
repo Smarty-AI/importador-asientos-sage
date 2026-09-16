@@ -189,3 +189,72 @@ describe("validateBatch — rowNumber propagation and actionable messages", () =
     expect(conceptoError.message).toMatch(/recibido/i);
   });
 });
+
+describe("validateBatch — Debe/Haber zero handling", () => {
+  it("accepts debe=100 when haber=0", () => {
+    const groups = [group(1, [validLine({ debe: 100, haber: 0 })])];
+
+    const { errors } = validateBatch(groups, CATALOG);
+
+    expect(errors).toEqual([]);
+  });
+
+  it("accepts haber=50 when debe=0", () => {
+    const groups = [group(1, [validLine({ debe: 0, haber: 50 })])];
+
+    const { errors } = validateBatch(groups, CATALOG);
+
+    expect(errors).toEqual([]);
+  });
+
+  it("errors once with 'Debe uno' when both sides are 0", () => {
+    const groups = [group(1, [validLine({ debe: 0, haber: 0 })])];
+
+    const { errors } = validateBatch(groups, CATALOG);
+
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toMatch(/Debe uno/);
+  });
+
+  it("errors once with 'Debe uno' when both sides are blank strings", () => {
+    const groups = [group(1, [validLine({ debe: "", haber: "   " })])];
+
+    const { errors } = validateBatch(groups, CATALOG);
+
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toMatch(/Debe uno/);
+  });
+
+  it("errors with 'ambos' when both sides hold non-zero importes", () => {
+    const groups = [group(1, [validLine({ debe: 100, haber: 50 })])];
+
+    const { errors } = validateBatch(groups, CATALOG);
+
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toMatch(/ambos/);
+  });
+
+  it("accepts a spaced numeric string with a blank other side", () => {
+    const groups = [group(1, [validLine({ debe: " 100 ", haber: "  " })])];
+
+    const { errors } = validateBatch(groups, CATALOG);
+
+    expect(errors).toEqual([]);
+  });
+
+  it("treats zero-like strings as empty (debe=' 0 ' with haber=50 is valid)", () => {
+    const groups = [group(1, [validLine({ debe: " 0 ", haber: 50 })])];
+
+    const { errors } = validateBatch(groups, CATALOG);
+
+    expect(errors).toEqual([]);
+  });
+
+  it("errors non-numeric when the set side holds 'abc'", () => {
+    const groups = [group(1, [validLine({ debe: "abc", haber: null })])];
+
+    const { errors } = validateBatch(groups, CATALOG);
+
+    expect(errors.some((e) => e.message.toLowerCase().includes("no numérico"))).toBe(true);
+  });
+});

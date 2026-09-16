@@ -75,8 +75,8 @@ function collectBlockingErrors(line, errors) {
     });
   }
 
-  const debeSet = !isBlank(line.debe);
-  const haberSet = !isBlank(line.haber);
+  const debeSet = isAmountSet(line.debe);
+  const haberSet = isAmountSet(line.haber);
   if (debeSet && haberSet) {
     errors.push({
       nOrden,
@@ -143,6 +143,16 @@ function collectWarnings(line, catalog, warnings) {
 
 function isBlank(value) {
   return value === null || value === undefined || String(value).trim() === "";
+}
+
+/**
+ * Presence check used ONLY for Debe/Haber: 0, "0" (even with surrounding
+ * spaces), null, undefined, "" and blank strings all count as "empty", so a
+ * line is valid only when exactly one side holds a non-zero importe.
+ */
+function isAmountSet(value) {
+  if (isBlank(value)) return false;
+  return Number(String(value).trim()) !== 0;
 }
 
 /**
