@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getDefaultBatchConfig, resolveBatchConfig } from "../docs/src/ui.js";
+import { getDefaultBatchConfig, resolveBatchConfig, formatIssue } from "../docs/src/ui.js";
 
 // Only the DOM-free pure helpers extracted from `ui.js` are unit-tested here.
 // `ui.js`'s DOM-wiring code is guarded (`typeof document !== "undefined"`)
@@ -33,5 +33,28 @@ describe("resolveBatchConfig", () => {
     const result = resolveBatchConfig({ CUR: "   " });
 
     expect(result.CUR).toBe("ARS");
+  });
+});
+
+describe("formatIssue — pure per-row error sentence", () => {
+  it("renders Excel row, entry number, field and message in one actionable line", () => {
+    const text = formatIssue({
+      nOrden: 1,
+      rowNumber: 3,
+      field: "fecha",
+      message: 'Fecha inválida (recibido: "abc"; esperado: fecha ISO o fecha Excel)',
+    });
+
+    expect(text).toMatch(/Fila Excel 3/);
+    expect(text).toMatch(/Asiento 1/);
+    expect(text).toMatch(/fecha/);
+    expect(text).toMatch(/abc/);
+  });
+
+  it("falls back gracefully when rowNumber or field is missing", () => {
+    const text = formatIssue({ nOrden: 2, message: "Concepto vacío" });
+
+    expect(text).toMatch(/Asiento 2/);
+    expect(text).toMatch(/Concepto vacío/);
   });
 });

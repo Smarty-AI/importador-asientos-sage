@@ -137,3 +137,55 @@ describe("validateBatch — non-blocking warnings", () => {
     expect(errors).toEqual([]);
   });
 });
+
+describe("validateBatch — rowNumber propagation and actionable messages", () => {
+  function groupWithRowNumber(nOrden, rowNumber, lineOverrides = {}) {
+    return {
+      nOrden,
+      lines: [{ nOrden, rowNumber, ...validLine(lineOverrides) }],
+    };
+  }
+
+  it("propagates Excel rowNumber into every issue", () => {
+    const groups = [groupWithRowNumber(1, 5, { fecha: "abc" })];
+
+    const { errors } = validateBatch(groups, CATALOG);
+
+    expect(errors.length).toBeGreaterThan(0);
+    expect(errors[0].rowNumber).toBe(5);
+  });
+
+  it("enriches an invalid fecha with the received value and the expected form", () => {
+    const groups = [groupWithRowNumber(1, 2, { fecha: "abc" })];
+
+    const { errors } = validateBatch(groups, CATALOG);
+
+    const fechaError = errors.find((e) => e.field === "fecha");
+    expect(fechaError).toBeDefined();
+    expect(fechaError.message).toMatch(/abc/);
+    expect(fechaError.message).toMatch(/esperado/i);
+    expect(fechaError.message).toMatch(/recibido/i);
+  });
+
+  it("enriches a non-numeric codigoCuenta with the received value and the expected form", () => {
+    const groups = [groupWithRowNumber(1, 3, { codigoCuenta: "ABC123" })];
+
+    const { errors } = validateBatch(groups, CATALOG);
+
+    const codeError = errors.find((e) => e.field === "codigoCuenta");
+    expect(codeError).toBeDefined();
+    expect(codeError.message).toMatch(/ABC123/);
+    expect(codeError.message).toMatch(/esperado/i);
+  });
+
+  it("enriches an empty concepto with the received value and the expected form", () => {
+    const groups = [groupWithRowNumber(7, 9, { concepto: "" })];
+
+    const { errors } = validateBatch(groups, CATALOG);
+
+    const conceptoError = errors.find((e) => e.field === "concepto");
+    expect(conceptoError).toBeDefined();
+    expect(conceptoError.message).toMatch(/esperado/i);
+    expect(conceptoError.message).toMatch(/recibido/i);
+  });
+});

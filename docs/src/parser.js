@@ -14,10 +14,26 @@
  *   denominacionCuenta: string|null,
  *   debe: number|null,
  *   haber: number|null,
+ *   rowNumber: number|null,
  * }} RawRow
  *
  * @typedef {{ nOrden: string|number, lines: RawRow[] }} OrdenGroup
  */
+
+/**
+ * Single source of truth for the expected input header row (header = Excel
+ * row 1). Must stay in sync with `template-builder.js` TEMPLATE_HEADER —
+ * covered by a contract test in `test/parser.test.js`.
+ */
+export const EXPECTED_HEADERS = [
+  "N° Orden",
+  "Fecha",
+  "Concepto",
+  "Código Cuenta",
+  "Denominación de Cuenta",
+  "Debe",
+  "Haber",
+];
 
 const HEADER_MAP = {
   "N° Orden": "nOrden",
@@ -30,19 +46,87 @@ const HEADER_MAP = {
 };
 
 /**
+ * Pure header comparison — no throw, just facts for the caller and tests.
+ * Order-sensitive: a reordered row is a mismatch.
+ * @param {unknown[]} receivedHeaders
+ * @returns {{ ok: boolean, expected: string[], received: string[], missing: string[], unexpected: string[] }}
+ */
+export function checkHeaders(receivedHeaders) {
+  const received = Array.isArray(receivedHeaders) ? receivedHeaders.map(String) : [];
+  const missing = EXPECTED_HEADERS.filter((h) => !received.includes(h));
+  const unexpected = received.filter((h) => !EXPECTED_HEADERS.includes(h));
+  const sameOrder =
+    received.length === EXPECTED_HEADERS.length &&
+    EXPECTED_HEADERS.every((h, i) => received[i] === h);
+  return {
+    ok: sameOrder && missing.length === 0 && unexpected.length === 0,
+    expected: [...EXPECTED_HEADERS],
+    received,
+    missing,
+    unexpected,
+  };
+}
+
+/**
  * @param {ArrayBuffer} arrayBuffer
  * @param {typeof import("xlsx")} XLSXLib
  * @returns {RawRow[]}
  */
 export function parseWorkbook(arrayBuffer, XLSXLib) {
   const workbook = XLSXLib.read(arrayBuffer, { type: "array" });
+  assertWorkbookNotEmpty(workbook);
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
+  assertSheetFound(sheet);
+  assertHeadersMatch(readHeaderRow(sheet, XLSXLib));
   const rawRecords = XLSXLib.utils.sheet_to_json(sheet, { defval: null });
+  assertHasDataRows(rawRecords);
 
-  return rawRecords.map((record) => toRawRow(record));
+  return rawRecords.map((record, index) => toRawRow(record, index + 2));
 }
 
-function toRawRow(record) {
+function readHeaderRow(sheet, XLSXLib) {
+  const rows = XLSXLib.utils.sheet_to_json(sheet, { header: 1, defval: null });
+  const headerRow = Array.isArray(rows) && rows.length > 0 ? rows[0] : [];
+  return (Array.isArray(headerRow) ? headerRow : []).filter(
+    (cell) => cell !== null && cell !== undefined && String(cell).trim() !== ""
+  );
+}
+
+function assertWorkbookNotEmpty(workbook) {
+  if (!workbook || !Array.isArray(workbook.SheetNames) || workbook.SheetNames.length === 0) {
+    throw new Error(
+      `Libro Excel vacío: no se encontraron hojas (recibido: 0 hojas; esperado: una hoja con encabezados: ${EXPECTED_HEADERS.join(", ")})`
+    );
+  }
+}
+
+function assertSheetFound(sheet) {
+  if (!sheet) {
+    throw new Error(
+      `Hoja no encontrada: la primera hoja está vacía o no existe (recibido: hoja ausente; esperado: una hoja con encabezados: ${EXPECTED_HEADERS.join(", ")})`
+    );
+  }
+}
+
+function assertHeadersMatch(receivedHeaders) {
+  const check = checkHeaders(receivedHeaders);
+  if (!check.ok) {
+    const receivedText = check.received.length > 0 ? check.received.join(", ") : "(vacío)";
+    throw new Error(
+      `Encabezados inválidos — un solo error bloqueante (recibido: ${receivedText}; esperado: ${check.expected.join(", ")})`
+    );
+  }
+}
+
+function assertHasDataRows(rawRecords) {
+  if (!Array.isArray(rawRecords) || rawRecords.length === 0) {
+    throw new Error(
+      "Sin filas de datos: solo se encontró el encabezado (recibido: 0 filas; esperado: al menos 1 fila de datos)"
+    );
+  }
+}
+
+function toRawRow(record, rowNumber) {
   /** @type {Partial<RawRow>} */
   const row = {};
   for (const [excelHeader, fieldName] of Object.entries(HEADER_MAP)) {
@@ -50,6 +134,7 @@ function toRawRow(record) {
       ? record[excelHeader]
       : null;
   }
+  row.rowNumber = rowNumber;
   return /** @type {RawRow} */ (row);
 }
 

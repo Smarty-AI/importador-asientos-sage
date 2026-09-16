@@ -4,9 +4,9 @@
  *   preview table render -> download button -> sage-line-builder.js -> Blob
  *
  * Not unit-tested (by design, see `sdd/importador-sage-zxarggas-html/design`
- * Testing Strategy — manual smoke test only), EXCEPT the one pure helper
- * extracted below (`getDefaultBatchConfig`), which IS unit-tested in
- * `test/ui-helpers.test.js`.
+ * Testing Strategy — manual smoke test only), EXCEPT the pure helpers
+ * extracted below (`getDefaultBatchConfig`, `resolveBatchConfig`,
+ * `formatIssue`), which ARE unit-tested in `test/ui-helpers.test.js`.
  */
 
 import { parseWorkbook, groupByOrden } from "./parser.js";
@@ -22,6 +22,26 @@ import { buildTemplateWorkbook } from "./template-builder.js";
  */
 export function getDefaultBatchConfig() {
   return { TYP: "AJU", FCY: "CEN", JOU: "ODG", DACDIA: "STDCO", CUR: "ARS" };
+}
+
+/**
+ * Pure helper — one actionable sentence per issue for the error-detail list:
+ * "Fila Excel N · Asiento {nOrden} · {field}: {message}".
+ * Missing rowNumber/field degrade to "?" / "general" instead of crashing.
+ * @param {{ nOrden?: string|number|null, rowNumber?: number|null, field?: string|null, message: string }} issue
+ * @returns {string}
+ */
+export function formatIssue(issue) {
+  const row = issue?.rowNumber === null || issue?.rowNumber === undefined ? "?" : issue.rowNumber;
+  const orden =
+    issue?.nOrden === null || issue?.nOrden === undefined || String(issue.nOrden).trim() === ""
+      ? "?"
+      : issue.nOrden;
+  const field =
+    issue?.field === null || issue?.field === undefined || String(issue.field).trim() === ""
+      ? "general"
+      : issue.field;
+  return `Fila Excel ${row} · Asiento ${orden} · ${field}: ${issue?.message ?? ""}`;
 }
 
 /**
@@ -52,6 +72,8 @@ function initApp() {
   const downloadButton = document.getElementById("download-button");
   const downloadTemplateButton = document.getElementById("download-template-button");
   const statusEl = document.getElementById("status-message");
+  const errorListEl = document.getElementById("error-list");
+  const catalogWarningEl = document.getElementById("catalog-warning");
   const batchForm = document.getElementById("batch-config-form");
 
   let currentGroups = [];
@@ -64,24 +86,47 @@ function initApp() {
       catalog = loadCatalog(entries);
     })
     .catch(() => {
-      setStatus(statusEl, "No se pudo cargar el plan de cuentas (advertencias limitadas).");
+      // Persistent banner on its own element — never touches #status-message,
+      // so later file uploads cannot overwrite it.
+      setCatalogWarning(
+        catalogWarningEl,
+        "No se pudo cargar el plan de cuentas (advertencias limitadas)."
+      );
     });
 
   fileInput?.addEventListener("change", async (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    try {
+      const file = event.target.files?.[0];
+      if (!file) return;
 
-    const buffer = await file.arrayBuffer();
-    const rows = parseWorkbook(buffer, window.XLSX);
-    currentGroups = groupByOrden(rows);
-    currentIssues = validateBatch(currentGroups, catalog);
+      const buffer = await file.arrayBuffer();
+      const rows = parseWorkbook(buffer, window.XLSX);
+      currentGroups = groupByOrden(rows);
+      currentIssues = validateBatch(currentGroups, catalog);
 
-    renderPreview(previewBody, currentGroups, currentIssues);
-    downloadButton.disabled = currentIssues.errors.length > 0;
-    setStatus(
-      statusEl,
-      `${currentIssues.errors.length} error(es), ${currentIssues.warnings.length} advertencia(s).`
-    );
+      renderPreview(previewBody, currentGroups, currentIssues);
+      renderErrorList(errorListEl, currentIssues);
+      downloadButton.disabled = currentIssues.errors.length > 0;
+      setStatus(
+        statusEl,
+        `${currentIssues.errors.length} error(es), ${currentIssues.warnings.length} advertencia(s).`
+      );
+    } catch (err) {
+      // Actionable message: name the file problem and the runnable next step.
+      const detail = err?.message ?? String(err);
+      currentGroups = [];
+      currentIssues = { errors: [], warnings: [] };
+      renderPreview(previewBody, currentGroups, currentIssues);
+      renderErrorList(errorListEl, {
+        errors: [{ message: detail }],
+        warnings: [],
+      });
+      if (downloadButton) downloadButton.disabled = true;
+      setStatus(
+        statusEl,
+        `No se pudo procesar el Excel: ${detail} — revisá el archivo y volvé a intentarlo.`
+      );
+    }
   });
 
   downloadButton?.addEventListener("click", () => {
@@ -108,6 +153,12 @@ function renderPreview(tbody, groups, issues) {
 
   const errorOrdens = new Set(issues.errors.map((e) => String(e.nOrden)));
   const warningOrdens = new Set(issues.warnings.map((w) => String(w.nOrden)));
+  const messagesByOrden = new Map();
+  for (const issue of [...issues.errors, ...issues.warnings]) {
+    const key = String(issue.nOrden);
+    if (!messagesByOrden.has(key)) messagesByOrden.set(key, []);
+    messagesByOrden.get(key).push(formatIssue(issue));
+  }
 
   for (const group of groups) {
     for (const line of group.lines) {
@@ -119,6 +170,9 @@ function renderPreview(tbody, groups, issues) {
         : hasWarning
         ? "bg-yellow-100"
         : "";
+      // Tinted rows expose the full per-row detail on hover.
+      const detail = (messagesByOrden.get(String(group.nOrden)) ?? []).join(" | ");
+      if (detail) row.title = detail;
 
       row.innerHTML = `
         <td class="px-2 py-1">${escapeHtml(group.nOrden)}</td>
@@ -134,6 +188,23 @@ function renderPreview(tbody, groups, issues) {
   }
 }
 
+function renderErrorList(ul, issues) {
+  if (!ul) return;
+  ul.innerHTML = "";
+  for (const error of issues?.errors ?? []) {
+    const item = document.createElement("li");
+    item.className = "text-red-700";
+    item.textContent = formatIssue(error);
+    ul.appendChild(item);
+  }
+  for (const warning of issues?.warnings ?? []) {
+    const item = document.createElement("li");
+    item.className = "text-yellow-700";
+    item.textContent = formatIssue(warning);
+    ul.appendChild(item);
+  }
+}
+
 function escapeHtml(value) {
   if (value === null || value === undefined) return "";
   const div = document.createElement("div");
@@ -143,6 +214,12 @@ function escapeHtml(value) {
 
 function setStatus(el, message) {
   if (el) el.textContent = message;
+}
+
+function setCatalogWarning(el, message) {
+  if (!el) return;
+  el.textContent = message;
+  el.hidden = false;
 }
 
 function downloadTextFile(content, filename) {

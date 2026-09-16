@@ -1,6 +1,11 @@
 import { describe, it, expect } from "vitest";
 import XLSX from "xlsx";
-import { parseWorkbook, groupByOrden } from "../docs/src/parser.js";
+import {
+  parseWorkbook,
+  groupByOrden,
+  EXPECTED_HEADERS,
+  checkHeaders,
+} from "../docs/src/parser.js";
 
 // `parser.js` never imports an XLSX library itself (no bundler, no global
 // assumptions) — it receives the library as an explicit dependency, matching
@@ -82,5 +87,84 @@ describe("groupByOrden", () => {
 
     expect(groups.map((g) => g.nOrden)).toEqual([2, 1]);
     expect(groups[0].lines).toHaveLength(2);
+  });
+});
+
+describe("parseWorkbook — rowNumber", () => {
+  it("attaches Excel rowNumber with header as row 1 and first data row as row 2", () => {
+    const buffer = buildWorkbookArrayBuffer([
+      HEADER,
+      [1, "2026-01-15", "Row one", "11010001", "Caja", 1000, null],
+      [1, "2026-01-15", "Row two", "21010001", "Proveedores", null, 1000],
+    ]);
+
+    const rows = parseWorkbook(buffer, XLSX);
+
+    expect(rows[0].rowNumber).toBe(2);
+    expect(rows[1].rowNumber).toBe(3);
+  });
+});
+
+describe("checkHeaders — pure header comparison", () => {
+  it("returns ok for the exact expected header row", () => {
+    const result = checkHeaders([...EXPECTED_HEADERS]);
+
+    expect(result.ok).toBe(true);
+    expect(result.missing).toEqual([]);
+    expect(result.unexpected).toEqual([]);
+  });
+
+  it("detects a missing column and an unexpected column", () => {
+    const received = [...EXPECTED_HEADERS.filter((h) => h !== "Debe"), "Extra"];
+    const result = checkHeaders(received);
+
+    expect(result.ok).toBe(false);
+    expect(result.missing).toContain("Debe");
+    expect(result.unexpected).toContain("Extra");
+  });
+
+  it("flags a reordered header row as a mismatch", () => {
+    const received = [...EXPECTED_HEADERS].reverse();
+    const result = checkHeaders(received);
+
+    expect(result.ok).toBe(false);
+  });
+
+  it("stays consistent with the downloadable template header", async () => {
+    const { TEMPLATE_HEADER } = await import("../docs/src/template-builder.js");
+
+    expect(EXPECTED_HEADERS).toEqual(TEMPLATE_HEADER);
+  });
+});
+
+describe("parseWorkbook — named guards", () => {
+  it("throws a single blocking header-mismatch error listing expected vs received", () => {
+    const buffer = buildWorkbookArrayBuffer([
+      ["Wrong", "Headers", "Here"],
+      [1, "x", "y"],
+    ]);
+
+    expect(() => parseWorkbook(buffer, XLSX)).toThrow(/Encabezados|header/i);
+    try {
+      parseWorkbook(buffer, XLSX);
+    } catch (err) {
+      // Single error must name both sides so the user can fix the file.
+      expect(err.message).toMatch(/esperado/i);
+      expect(err.message).toMatch(/recibido/i);
+    }
+  });
+
+  it("throws an actionable error on an empty workbook with no sheets", () => {
+    const emptyWorkbook = XLSX.utils.book_new();
+
+    expect(() =>
+      parseWorkbook(XLSX.write(emptyWorkbook, { type: "array", bookType: "xlsx" }), XLSX)
+    ).toThrow(/vacío|empty|hoja|sheet/i);
+  });
+
+  it("throws an actionable error when only the header row exists (zero data rows)", () => {
+    const buffer = buildWorkbookArrayBuffer([HEADER]);
+
+    expect(() => parseWorkbook(buffer, XLSX)).toThrow(/fila|row/i);
   });
 });
