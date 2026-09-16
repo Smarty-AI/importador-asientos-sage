@@ -104,3 +104,47 @@ describe("buildZxarggasFile", () => {
     expect(coaByLedger).toEqual({ 1: "ARG", 2: "ARA", 4: "ARG", 5: "ARA", 6: "ARG" });
   });
 });
+
+describe("buildZxarggasFile — Debe/Haber zero means empty", () => {
+  function singleLineGroups(debe, haber) {
+    return [
+      {
+        nOrden: 1,
+        lines: [
+          {
+            nOrden: 1,
+            fecha: "2026-01-15",
+            concepto: "Ajuste",
+            codigoCuenta: "21010001",
+            debe,
+            haber,
+          },
+        ],
+      },
+    ];
+  }
+
+  function firstBSnsAmtcur(output) {
+    const bLine = output.split("\r\n").find((l) => l.startsWith("B"));
+    const fields = bLine.split(";");
+    return { sns: fields[10], amtcur: fields[11] };
+  }
+
+  it("treats debe=0 with haber=100 as a haber line (SNS=-1, amtcur=100)", () => {
+    const output = buildZxarggasFile(singleLineGroups(0, 100), BATCH_CONFIG, new Map());
+
+    expect(firstBSnsAmtcur(output)).toEqual({ sns: "-1", amtcur: "100" });
+  });
+
+  it("treats debe='0' with haber=100 as a haber line", () => {
+    const output = buildZxarggasFile(singleLineGroups("0", 100), BATCH_CONFIG, new Map());
+
+    expect(firstBSnsAmtcur(output)).toEqual({ sns: "-1", amtcur: "100" });
+  });
+
+  it("treats debe=100 with haber=0 as a debe line (SNS=1, amtcur=100)", () => {
+    const output = buildZxarggasFile(singleLineGroups(100, 0), BATCH_CONFIG, new Map());
+
+    expect(firstBSnsAmtcur(output)).toEqual({ sns: "1", amtcur: "100" });
+  });
+});

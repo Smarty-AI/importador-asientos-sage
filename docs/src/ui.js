@@ -130,14 +130,28 @@ function initApp() {
   });
 
   downloadButton?.addEventListener("click", () => {
-    const batchConfig = resolveBatchConfig(readFormValues(batchForm));
-    const content = buildZxarggasFile(currentGroups, batchConfig, catalog);
-    downloadTextFile(content, "zxarggas_export.txt");
+    try {
+      const batchConfig = resolveBatchConfig(readFormValues(batchForm));
+      const content = buildZxarggasFile(currentGroups, batchConfig, catalog);
+      downloadTextFile(content, "zxarggas_export.txt");
+    } catch (err) {
+      const detail = err?.message ?? String(err);
+      renderErrorList(errorListEl, {
+        errors: [{ message: detail }],
+        warnings: [],
+      });
+      setStatus(statusEl, `No se pudo generar el archivo: ${detail}`);
+    }
   });
 
   downloadTemplateButton?.addEventListener("click", () => {
-    const workbook = buildTemplateWorkbook(window.XLSX);
-    downloadWorkbookFile(window.XLSX, workbook, "plantilla_asientos.xlsx");
+    try {
+      const workbook = buildTemplateWorkbook(window.XLSX);
+      downloadWorkbookFile(window.XLSX, workbook, "plantilla_asientos.xlsx");
+    } catch (err) {
+      const detail = err?.message ?? String(err);
+      setStatus(statusEl, `No se pudo generar la plantilla: ${detail}`);
+    }
   });
 }
 

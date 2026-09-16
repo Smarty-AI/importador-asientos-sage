@@ -75,8 +75,8 @@ function collectBlockingErrors(line, errors) {
     });
   }
 
-  const debeSet = isAmountSet(line.debe);
-  const haberSet = isAmountSet(line.haber);
+  const debeSet = !isBlankOrZero(line.debe);
+  const haberSet = !isBlankOrZero(line.haber);
   if (debeSet && haberSet) {
     errors.push({
       nOrden,
@@ -146,13 +146,16 @@ function isBlank(value) {
 }
 
 /**
- * Presence check used ONLY for Debe/Haber: 0, "0" (even with surrounding
- * spaces), null, undefined, "" and blank strings all count as "empty", so a
- * line is valid only when exactly one side holds a non-zero importe.
+ * Business rule: numeric zero (0, "0", "0.00", " 0 ") counts as "empty", so
+ * a line is valid only when exactly one side holds a non-zero importe.
+ * Non-numeric values ("abc") are NOT zero — they count as set so the
+ * caller reports "no numérico". SAGE uses plain Number() (no es-AR comma).
  */
-function isAmountSet(value) {
-  if (isBlank(value)) return false;
-  return Number(String(value).trim()) !== 0;
+function isBlankOrZero(value) {
+  if (isBlank(value)) return true;
+  const num = Number(String(value).trim());
+  if (Number.isNaN(num)) return false;
+  return num === 0;
 }
 
 /**

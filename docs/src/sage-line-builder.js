@@ -103,11 +103,27 @@ function buildDetailLines(group, batchConfig) {
 }
 
 function deriveSnsAndAmount(line) {
-  const debeSet = line.debe !== null && line.debe !== undefined && line.debe !== "";
+  const debeSet = !isBlankOrZero(line.debe);
   if (debeSet) {
     return { sns: 1, amtcur: Math.abs(Number(line.debe)) };
   }
   return { sns: -1, amtcur: Math.abs(Number(line.haber)) };
+}
+
+function isBlank(value) {
+  return value === null || value === undefined || String(value).trim() === "";
+}
+
+/**
+ * Business rule: numeric zero ("0", "0.00", 0, " 0 ") means EMPTY.
+ * Non-numeric values ("abc") are NOT zero — they count as set so the
+ * validator reports them as "no numérico".
+ */
+function isBlankOrZero(value) {
+  if (isBlank(value)) return true;
+  const num = Number(String(value).trim());
+  if (Number.isNaN(num)) return false;
+  return num === 0;
 }
 
 function toAAAAMMDD(fecha) {
