@@ -22,24 +22,34 @@ describe("getLedgerMapping", () => {
     });
   });
 
-  it("maps prefix 4 (resultado - gastos) to ledgers 1,2,4,5,6 with ARG/ARA split", () => {
+  it("maps prefix 4 (resultado - gastos) to ledgers 1,4,6 all COA=ARG", () => {
     const result = getLedgerMapping("41010001");
 
     expect(result).toEqual({
-      ledgers: [1, 2, 4, 5, 6],
-      coaByLedger: { 1: "ARG", 2: "ARA", 4: "ARG", 5: "ARA", 6: "ARG" },
+      ledgers: [1, 4, 6],
+      coaByLedger: { 1: "ARG", 4: "ARG", 6: "ARG" },
       unexpectedPrefix: false,
     });
   });
 
-  it("maps prefix 5 (resultado - ingresos) to ledgers 1,2,4,5,6 with ARG/ARA split", () => {
+  it("maps prefix 5 (resultado - ingresos) to ledgers 1,4,6 all COA=ARG", () => {
     const result = getLedgerMapping("51010001");
 
     expect(result).toEqual({
-      ledgers: [1, 2, 4, 5, 6],
-      coaByLedger: { 1: "ARG", 2: "ARA", 4: "ARG", 5: "ARA", 6: "ARG" },
+      ledgers: [1, 4, 6],
+      coaByLedger: { 1: "ARG", 4: "ARG", 6: "ARG" },
       unexpectedPrefix: false,
     });
+  });
+
+  it("never emits the ARA ledgers 2/5 for any prefix (no eje needed)", () => {
+    for (const code of ["11010001", "21010001", "31010008", "41010001", "51010001", "888888883"]) {
+      const result = getLedgerMapping(code);
+
+      expect(result.ledgers).not.toContain(2);
+      expect(result.ledgers).not.toContain(5);
+      expect(Object.values(result.coaByLedger)).not.toContain("ARA");
+    }
   });
 
   it("maps prefix 3 (patrimonio neto, e.g. 31010008) to ledgers 1,4,6 all COA=ARG without ARA", () => {

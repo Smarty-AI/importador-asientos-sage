@@ -1,28 +1,39 @@
 /**
  * Pure ledger/COA-by-account-prefix mapping.
  *
- * Business rule (confirmed against a full real year of Electro Universo
- * data, see design-decisions #1297, plus 31010008 ARA-false-positive fix):
- * - prefix 1/2 (patrimonial: activo/pasivo), 3 (patrimonio neto) and
- *   8 (orden) -> ledgers 1,4,6, all COA=ARG (never ARA, SAGE has no
- *   analytic axis for these)
- * - prefix 4/5 (resultado: gastos/ingresos) -> ledgers 1,2,4,5,6, with
- *   1,4,6=ARG and 2,5=ARA
- * - any other prefix (0,6,7,9, etc.) -> safe default to the patrimonial
- *   mapping [1,4,6] all ARG, plus `unexpectedPrefix: true` (non-blocking
- *   warning upstream, not a hard error) so we never emit a false ARA
- *   that SAGE would reject as a missing analytic account
+ * BUSINESS DECISION: every account posts to ledgers 1, 4 and 6 — the ARG plan
+ * only. The ARA repeats (2/5) are deliberately NOT emitted, so no analytic
+ * axis (eje) is ever needed.
  *
- * @typedef {{ ledgers: number[], coaByLedger: Record<number, "ARG"|"ARA">, unexpectedPrefix: boolean }} LedgerMapping
+ * Why ARA was dropped: the installed model rejects this file both ways for any
+ * line that would post to an ARA ledger. With no eje line it answers error 97
+ * ("Hay que indicar al menos un eje"); with any eje line the grid can express
+ * it answers error 25 ("Distribución descuadrada"), because the GACCENTRYA grid
+ * has only ANALIN, DIE and CCE — no field for the distribution amount, so the
+ * distribution never balances against the accounting line.
+ *
+ * That was measured, not guessed: four eje variants (one per ARA repeat vs one
+ * per accounting line, each with a value vs an empty value) were imported
+ * through the model's Test button and all four failed identically, while a
+ * control entry with no eje line at line imported clean. The user confirmed
+ * the analysis-plan impact is not required for these adjustment entries.
+ *
+ * Do NOT re-add the ARA ledgers to work around a rejection. Re-adding them
+ * requires the model to accept a distribution amount first, or a different
+ * import model that exposes one.
+ *
+ * @typedef {{ ledgers: number[], coaByLedger: Record<number, "ARG">, unexpectedPrefix: boolean }} LedgerMapping
  */
 
-const PATRIMONIAL_PREFIXES = new Set(["1", "2", "3", "8"]);
-const RESULTADO_PREFIXES = new Set(["4", "5"]);
+const LEDGERS = [1, 4, 6];
+const COA = "ARG";
 
-const PATRIMONIAL_LEDGERS = [1, 4, 6];
-const RESULTADO_LEDGERS = [1, 2, 4, 5, 6];
-
-const LEDGER_TO_COA = { 1: "ARG", 2: "ARA", 4: "ARG", 5: "ARA", 6: "ARG" };
+/**
+ * Prefixes present in the real chart of accounts. Anything else still gets the
+ * safe ARG mapping, but is flagged so the validator can warn that the account
+ * prefix was not recognised.
+ */
+const KNOWN_PREFIXES = new Set(["1", "2", "3", "4", "5", "8"]);
 
 /**
  * @param {string} accountCode
@@ -31,23 +42,15 @@ const LEDGER_TO_COA = { 1: "ARG", 2: "ARA", 4: "ARG", 5: "ARA", 6: "ARG" };
 export function getLedgerMapping(accountCode) {
   const prefix = String(accountCode).charAt(0);
 
-  if (PATRIMONIAL_PREFIXES.has(prefix)) {
-    return buildMapping(PATRIMONIAL_LEDGERS, false);
-  }
-
-  if (RESULTADO_PREFIXES.has(prefix)) {
-    return buildMapping(RESULTADO_LEDGERS, false);
-  }
-
-  // Safe default: patrimonial mapping (ARG only) so unknown prefixes
-  // never emit a false ARA that SAGE would reject.
-  return buildMapping(PATRIMONIAL_LEDGERS, true);
-}
-
-function buildMapping(ledgers, unexpectedPrefix) {
+  /** @type {Record<number, "ARG">} */
   const coaByLedger = {};
-  for (const ledger of ledgers) {
-    coaByLedger[ledger] = LEDGER_TO_COA[ledger];
+  for (const ledger of LEDGERS) {
+    coaByLedger[ledger] = COA;
   }
-  return { ledgers: [...ledgers], coaByLedger, unexpectedPrefix };
+
+  return {
+    ledgers: [...LEDGERS],
+    coaByLedger,
+    unexpectedPrefix: !KNOWN_PREFIXES.has(prefix),
+  };
 }

@@ -219,17 +219,12 @@ function collectWarnings(line, catalog, warnings) {
 
   if (isNumeric(line.codigoCuenta)) {
     const mapping = getLedgerMapping(line.codigoCuenta);
-    const prefix = String(line.codigoCuenta).charAt(0);
-    const isResultadoPrefix = prefix === "4" || prefix === "5";
-    const emitsARA = mapping.ledgers.includes(2) || mapping.ledgers.includes(5);
-    // Second layer: any ARA-emitting mapping on a non-4/5 prefix would
-    // make SAGE ask for an ARA analytic axis that does not exist.
-    if (mapping.unexpectedPrefix || (emitsARA && !isResultadoPrefix)) {
+    if (mapping.unexpectedPrefix) {
       warnings.push({
         nOrden,
         rowNumber,
         field: "codigoCuenta",
-        message: `Prefijo de cuenta inusual para ${line.codigoCuenta} — emitirá ledgers ARA (2/5) y SAGE pedirá eje analítico ARA`,
+        message: `Prefijo de cuenta no reconocido para ${line.codigoCuenta} — se exporta igual con los ledgers 1/4/6 (ARG)`,
       });
     }
   }

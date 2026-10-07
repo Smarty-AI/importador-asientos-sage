@@ -117,7 +117,7 @@ describe("validateBatch — non-blocking warnings", () => {
     expect(warnings.some((w) => w.message.toLowerCase().includes("tercero"))).toBe(true);
   });
 
-  it("warns (does not error) on an unexpected account prefix and mentions the ARA analytic axis", () => {
+  it("warns (does not error) on an unrecognised account prefix", () => {
     const groups = [group(1, [validLine({ codigoCuenta: "61010001" })])];
 
     const { errors, warnings } = validateBatch(groups, CATALOG);
@@ -125,7 +125,8 @@ describe("validateBatch — non-blocking warnings", () => {
     expect(errors).toEqual([]);
     const prefixWarning = warnings.find((w) => w.message.toLowerCase().includes("prefijo"));
     expect(prefixWarning).toBeDefined();
-    expect(prefixWarning.message).toContain("emitirá ledgers ARA (2/5)");
+    expect(prefixWarning.message).toContain("no reconocido");
+    expect(prefixWarning.message).not.toContain("ARA");
   });
 
   it("does not warn on prefix 3 (patrimonio neto, e.g. 31010008) since it maps to ARG-only ledgers", () => {

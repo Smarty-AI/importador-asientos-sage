@@ -25,39 +25,18 @@
  * row's own Concepto as the line DES, and a per-line sequential LIN/IDTLIN
  * (constant across that line's ledger repeats).
  *
- * "C" analytic-axis line: the model additionally requires at least one eje
- * (analytic axis) on every accounting line that posts to an ARA ledger
- * (2/5), otherwise SAGE rejects it with error 97 "Hay que indicar al menos
- * un eje". One C line follows each such B line (both the ledger-2 and the
- * ledger-5 repeat), shaped `C;<eje-seq>;CCO;<value>`, where the second field
- * is a counter of eje lines on that accounting line (always 1 here — we
- * emit exactly one). This shape still comes from the year of real data, not
- * from a parser trace: the import model did not report any eje complaint on
- * the last run, but every record failed earlier on the SAC/COA shift, so the
- * eje line is still unverified against the model itself.
- *
- * EJE value rule (business decision, derived from one full year of real
- * SAGE data): income accounts (prefix 4) → VEN, expense accounts
- * (prefix 5) → ADM. That is ~99% of explicit historical values on prefix 4
- * and ~95% on prefix 5; no prefix outside 4/5 ever reaches an ARA ledger,
- * so the fallback is unreachable in practice. Historical eje assignment is
- * NOT deterministic per account (the same account carries different ejes
- * across entries), so this is a deliberate, documented simplification —
- * not an invented mapping.
+ * "C" analytic-axis line: NOT EMITTED. Emitting one makes every entry that
+ * touches an ARA ledger fail with error 25 ("Distribución descuadrada"), and
+ * omitting it makes the same entries fail with error 97 ("Hay que indicar al
+ * menos un eje") — the installed model accepts neither, because the eje grid
+ * (GACCENTRYA: ANALIN, DIE, CCE) has no field for the distribution amount.
+ * The way out is `ledger-rules.js`: only ledgers 1/4/6 are emitted, so no
+ * line ever needs an axis. See that module for the measured evidence.
  */
 
 import { getLedgerMapping } from "./ledger-rules.js";
 
 const FIXED_RATMLT = "1";
-
-// Analytic axis code — the only axis in use in the real SAGE data (179,464
-// of 179,464 eje lines are CCO).
-const EJE_CODE = "CCO";
-
-// Business rule: income → VEN (sales), expense → ADM (administration).
-// See the module docstring for the evidence behind it.
-const EJE_BY_ACCOUNT_PREFIX = { 4: "VEN", 5: "ADM" };
-const EJE_FALLBACK = "ADM";
 
 /**
  * @param {import("./parser.js").OrdenGroup[]} groups
@@ -109,17 +88,15 @@ function buildHeaderLine(group, batchConfig) {
 //
 // There is NO COA field in this model. COA exists as a column of the
 // GACCENTRYD table (ARG/ARA) and shows up in SAGE's record browser, but the
-// import grid does not expose it: SAGE derives the plan from LEDTYP, where
-// 2/5 are the ARA repeats. Emitting it shifted every following field one
-// position to the left, so SAGE read the plan as SAC and failed all 76 lines
-// with error 99 "La cuenta de control no existe". Confirmed against the
-// DIMPOBJ2 parser trace and against a full year of real SAGE data, whose
-// lines carry exactly these 11 fields.
+// import grid does not expose it: SAGE derives the plan from LEDTYP. Emitting
+// it shifted every following field one position to the left, so SAGE read the
+// plan as SAC and failed all 76 lines with error 99 "La cuenta de control no
+// existe". Confirmed against the DIMPOBJ2 parser trace and against a full
+// year of real SAGE data, whose lines carry exactly these 11 fields.
 //
 // One "B" line is emitted per ledger returned by ledger-rules.js for that
 // account (the same accounting line repeated once per ledger it posts to —
-// see design-decisions #1297 on why cuentas patrimoniales only need
-// ledgers 1,4,6 while cuentas de resultado also need 2,5 with the ARA plan).
+// see design-decisions #1297 on the ledger expansion).
 function buildDetailLines(group, batchConfig) {
   const detailLines = [];
 
@@ -144,31 +121,10 @@ function buildDetailLines(group, batchConfig) {
         batchConfig.CUR, // CUR ("Divisa de asiento"): line currency, batch-fixed to "ARS"
       ];
       detailLines.push("B;" + fields.join(";"));
-
-      // Every ARA-ledger repeat must be followed by its analytic-axis line,
-      // or SAGE rejects the entry with error 97 ("Hay que indicar al menos
-      // un eje"). Ejos are numbered per accounting line; we always emit
-      // exactly one, hence the constant 1.
-      if (mapping.coaByLedger[ledger] === "ARA") {
-        detailLines.push(`C;1;${EJE_CODE};${resolveEje(line.codigoCuenta)}`);
-      }
     }
   });
 
   return detailLines;
-}
-
-/**
- * Resolves the eje (analytic axis) value for one accounting line, by account
- * prefix: 4 (ingresos) → VEN, 5 (gastos) → ADM. Any other prefix cannot
- * reach an ARA ledger under `ledger-rules.js`, so the fallback is only a
- * guard against a future mapping change.
- * @param {unknown} codigoCuenta
- * @returns {string}
- */
-function resolveEje(codigoCuenta) {
-  const prefix = Number(String(codigoCuenta).charAt(0));
-  return EJE_BY_ACCOUNT_PREFIX[prefix] ?? EJE_FALLBACK;
 }
 
 function deriveSnsAndAmount(line) {
