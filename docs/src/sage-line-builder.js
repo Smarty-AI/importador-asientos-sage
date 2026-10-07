@@ -19,11 +19,40 @@
  * LIN/IDTLIN (constant across that line's ledger repeats). This is a
  * disclosed assumption, not a silently invented rule — flag for user
  * confirmation against a real SAGE test import.
+ *
+ * "C" analytic-axis line: the current model (XARGGASANA) additionally
+ * requires at least one eje (analytic axis) on every accounting line that
+ * posts to an ARA ledger (2/5), otherwise SAGE rejects it with error 97
+ * "Hay que indicar al menos un eje". One C line follows each such B line
+ * (both the ledger-2 and the ledger-5 repeat), shaped
+ * `C;<eje-seq>;CCO;<value>`, where the second field is a counter of eje
+ * lines on that accounting line (always 1 here — we emit exactly one).
+ *
+ * EJE value rule (business decision, derived from one full year of real
+ * SAGE data): income accounts (prefix 4) → VEN, expense accounts
+ * (prefix 5) → ADM. That is ~99% of explicit historical values on prefix 4
+ * and ~95% on prefix 5; no prefix outside 4/5 ever reaches an ARA ledger,
+ * so the fallback is unreachable in practice. Historical eje assignment is
+ * NOT deterministic per account (the same account carries different ejes
+ * across entries), so this is a deliberate, documented simplification —
+ * not an invented mapping.
  */
 
 import { getLedgerMapping } from "./ledger-rules.js";
 
 const FIXED_RATMLT = "1";
+
+// ARA ledger repeats (2/5) are the ones that carry an analytic axis.
+const ARA_LEDGERS = new Set([2, 5]);
+
+// Analytic axis code — the only axis in use in the real SAGE data (179,464
+// of 179,464 eje lines are CCO).
+const EJE_CODE = "CCO";
+
+// Business rule: income → VEN (sales), expense → ADM (administration).
+// See the module docstring for the evidence behind it.
+const EJE_BY_ACCOUNT_PREFIX = { 4: "VEN", 5: "ADM" };
+const EJE_FALLBACK = "ADM";
 
 /**
  * @param {import("./parser.js").OrdenGroup[]} groups
@@ -96,10 +125,31 @@ function buildDetailLines(group, batchConfig) {
         batchConfig.CUR, // CUR ("Divisa de asiento"): line currency, batch-fixed to "ARS"
       ];
       detailLines.push("B;" + fields.join(";"));
+
+      // Every ARA-ledger repeat must be followed by its analytic-axis line,
+      // or SAGE rejects the entry with error 97 ("Hay que indicar al menos
+      // un eje"). Ejos are numbered per accounting line; we always emit
+      // exactly one, hence the constant 1.
+      if (ARA_LEDGERS.has(ledger)) {
+        detailLines.push(`C;1;${EJE_CODE};${resolveEje(line.codigoCuenta)}`);
+      }
     }
   });
 
   return detailLines;
+}
+
+/**
+ * Resolves the eje (analytic axis) value for one accounting line, by account
+ * prefix: 4 (ingresos) → VEN, 5 (gastos) → ADM. Any other prefix cannot
+ * reach an ARA ledger under `ledger-rules.js`, so the fallback is only a
+ * guard against a future mapping change.
+ * @param {unknown} codigoCuenta
+ * @returns {string}
+ */
+function resolveEje(codigoCuenta) {
+  const prefix = Number(String(codigoCuenta).charAt(0));
+  return EJE_BY_ACCOUNT_PREFIX[prefix] ?? EJE_FALLBACK;
 }
 
 function deriveSnsAndAmount(line) {

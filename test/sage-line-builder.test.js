@@ -105,6 +105,110 @@ describe("buildZxarggasFile", () => {
   });
 });
 
+describe("buildZxarggasFile — eje analítico (línea C)", () => {
+  function ingresoGroups(codigoCuenta) {
+    return [
+      {
+        nOrden: 1,
+        lines: [
+          {
+            nOrden: 1,
+            fecha: "2026-03-10",
+            concepto: "Venta del mes",
+            codigoCuenta,
+            debe: null,
+            haber: 500,
+          },
+        ],
+      },
+    ];
+  }
+
+  it("emits exactly one C;1;CCO line after each ARA-ledger B line (2 and 5)", () => {
+    const output = buildZxarggasFile(ingresoGroups("41010001"), BATCH_CONFIG, new Map());
+    const lines = output.split("\r\n").filter((l) => l !== "");
+
+    expect(lines).toEqual([
+      "A;AJU;;CEN;ODG;20260310;;Venta del mes;;;1;ARS;STDCO;1",
+      "B;1;1;1;CEN;ARG;;41010001;;Venta del mes;-1;500;ARS",
+      "B;1;2;1;CEN;ARA;;41010001;;Venta del mes;-1;500;ARS",
+      "C;1;CCO;VEN",
+      "B;1;4;1;CEN;ARG;;41010001;;Venta del mes;-1;500;ARS",
+      "B;1;5;1;CEN;ARA;;41010001;;Venta del mes;-1;500;ARS",
+      "C;1;CCO;VEN",
+      "B;1;6;1;CEN;ARG;;41010001;;Venta del mes;-1;500;ARS",
+    ]);
+  });
+
+  it("uses VEN for prefix 4 (ingresos) and ADM for prefix 5 (gastos)", () => {
+    const ingreso = buildZxarggasFile(ingresoGroups("41010001"), BATCH_CONFIG, new Map());
+    const gasto = buildZxarggasFile(ingresoGroups("51050001"), BATCH_CONFIG, new Map());
+
+    expect(ingreso.split("\r\n").filter((l) => l.startsWith("C;"))).toEqual([
+      "C;1;CCO;VEN",
+      "C;1;CCO;VEN",
+    ]);
+    expect(gasto.split("\r\n").filter((l) => l.startsWith("C;"))).toEqual([
+      "C;1;CCO;ADM",
+      "C;1;CCO;ADM",
+    ]);
+  });
+
+  it("emits no C line for patrimonial accounts (ledgers 1/4/6 only, no ARA)", () => {
+    const groups = [
+      {
+        nOrden: 1,
+        lines: [
+          {
+            nOrden: 1,
+            fecha: "2026-03-10",
+            concepto: "Ajuste de caja",
+            codigoCuenta: "11010001",
+            debe: 100,
+            haber: null,
+          },
+        ],
+      },
+    ];
+
+    const output = buildZxarggasFile(groups, BATCH_CONFIG, new Map());
+
+    expect(output.split("\r\n").filter((l) => l.startsWith("C;"))).toEqual([]);
+  });
+
+  it("numbers the eje counter per accounting line, not per ledger repeat", () => {
+    const groups = [
+      {
+        nOrden: 5,
+        lines: [
+          {
+            nOrden: 5,
+            fecha: "2026-03-10",
+            concepto: "Gasto",
+            codigoCuenta: "51050001",
+            debe: 100,
+            haber: null,
+          },
+          {
+            nOrden: 5,
+            fecha: "2026-03-10",
+            concepto: "Ingreso",
+            codigoCuenta: "41010001",
+            debe: null,
+            haber: 100,
+          },
+        ],
+      },
+    ];
+
+    const output = buildZxarggasFile(groups, BATCH_CONFIG, new Map());
+    const cLines = output.split("\r\n").filter((l) => l.startsWith("C;"));
+
+    // One eje per ARA repeat of each line; both lines keep eje number 1.
+    expect(cLines).toEqual(["C;1;CCO;ADM", "C;1;CCO;ADM", "C;1;CCO;VEN", "C;1;CCO;VEN"]);
+  });
+});
+
 describe("buildZxarggasFile — Debe/Haber zero means empty", () => {
   function singleLineGroups(debe, haber) {
     return [
