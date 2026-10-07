@@ -8,3 +8,8 @@ package-lock.json
 # se usa localmente para desarrollo, nunca se sube al repo publico.
 /sage/
 /Guia_Interpretacion_Input_Output_SAGE_ZXARGGAS.docx
+
+# Exports, reportes de trazabilidad y planillas de trabajo con datos reales.
+# NO van al repo: docs/ es la carpeta que publica GitHub Pages.
+/docs/Nuevo modelo/
+/docs/issue/
