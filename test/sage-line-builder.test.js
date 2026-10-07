@@ -32,16 +32,97 @@ describe("buildZxarggasFile", () => {
     const output = buildZxarggasFile(groups, BATCH_CONFIG, new Map());
 
     const expectedLines = [
-      "A;AJU;;CEN;ODG;20260115;;Ajuste de caja;;;1;ARS;STDCO;1",
-      "B;1;1;1;CEN;ARG;;11010001;;Ajuste de caja;1;1000;ARS",
-      "B;1;4;1;CEN;ARG;;11010001;;Ajuste de caja;1;1000;ARS",
-      "B;1;6;1;CEN;ARG;;11010001;;Ajuste de caja;1;1000;ARS",
-      "B;2;1;2;CEN;ARG;;21010001;;Ajuste de caja;-1;1000;ARS",
-      "B;2;4;2;CEN;ARG;;21010001;;Ajuste de caja;-1;1000;ARS",
-      "B;2;6;2;CEN;ARG;;21010001;;Ajuste de caja;-1;1000;ARS",
+      "A;AJU;;CEN;ODG;15012026;;;Ajuste de caja;;1;ARS;STDCO;1",
+      "B;1;1;1;CEN;;11010001;;Ajuste de caja;1;1000;ARS",
+      "B;1;4;1;CEN;;11010001;;Ajuste de caja;1;1000;ARS",
+      "B;1;6;1;CEN;;11010001;;Ajuste de caja;1;1000;ARS",
+      "B;2;1;2;CEN;;21010001;;Ajuste de caja;-1;1000;ARS",
+      "B;2;4;2;CEN;;21010001;;Ajuste de caja;-1;1000;ARS",
+      "B;2;6;2;CEN;;21010001;;Ajuste de caja;-1;1000;ARS",
     ];
 
     expect(output).toBe(expectedLines.join("\r\n") + "\r\n");
+  });
+
+  it("writes the A line in the model's field order, with dates as DDMMYYYY", () => {
+    // Regression guard: the guide's order (DUDDAT before BPRDATVCR) pushed the
+    // description into the DUDDAT slot and SAGE reported "Fecha incorrecta
+    // DUDDAT". Model order is ACCDAT, BPRDATVCR, DUDDAT, DESVCR.
+    const groups = [
+      {
+        nOrden: 42,
+        lines: [
+          {
+            nOrden: 42,
+            fecha: new Date(Date.UTC(2025, 3, 1)),
+            concepto: "Ajuste apertura IIBB",
+            codigoCuenta: "11040070",
+            debe: 58925.89,
+            haber: null,
+          },
+        ],
+      },
+    ];
+
+    const [aLine] = buildZxarggasFile(groups, BATCH_CONFIG, new Map()).split("\r\n");
+    const fields = aLine.split(";");
+
+    expect(fields).toEqual([
+      "A",
+      "AJU", // TYP
+      "", // NUM
+      "CEN", // FCY
+      "ODG", // JOU
+      "01042025", // ACCDAT, DDMMYYYY
+      "", // BPRDATVCR
+      "", // DUDDAT
+      "Ajuste apertura IIBB", // DESVCR
+      "", // BPRVCR
+      "42", // REF
+      "ARS", // CUR
+      "STDCO", // DACDIA
+      "1", // RATMLT
+    ]);
+  });
+
+  it("writes the B line with the model's 11 fields and no COA", () => {
+    // Regression guard: emitting COA shifted every field left, so SAGE read the
+    // plan as SAC and rejected all 76 lines with error 99 "La cuenta de
+    // control no existe".
+    const groups = [
+      {
+        nOrden: 1,
+        lines: [
+          {
+            nOrden: 1,
+            fecha: "2025-04-01",
+            concepto: "Ajuste apertura IIBB",
+            codigoCuenta: "11040070",
+            debe: 58925.89,
+            haber: null,
+          },
+        ],
+      },
+    ];
+
+    const bLine = buildZxarggasFile(groups, BATCH_CONFIG, new Map())
+      .split("\r\n")
+      .find((l) => l.startsWith("B;"));
+
+    expect(bLine.split(";")).toEqual([
+      "B",
+      "1", // LIN
+      "1", // LEDTYP
+      "1", // IDTLIN
+      "CEN", // FCYLIN
+      "", // SAC
+      "11040070", // ACC
+      "", // BPR
+      "Ajuste apertura IIBB", // DES
+      "1", // SNS
+      "58925.89", // AMTCUR
+      "ARS", // CUR
+    ]);
   });
 
   it("NUM is always blank and SAC/BPR are always blank regardless of account", () => {
@@ -70,11 +151,11 @@ describe("buildZxarggasFile", () => {
 
     const bLine = output.split("\r\n")[1];
     const bFields = bLine.split(";");
-    expect(bFields[6]).toBe(""); // SAC always blank
-    expect(bFields[8]).toBe(""); // BPR always blank
+    expect(bFields[5]).toBe(""); // SAC always blank
+    expect(bFields[7]).toBe(""); // BPR always blank
   });
 
-  it("expands a 4/5-prefix account into 5 ledgers with the ARG/ARA split", () => {
+  it("expands a 4/5-prefix account into ledgers 1,2,4,5,6", () => {
     const groups = [
       {
         nOrden: 2,
@@ -95,13 +176,7 @@ describe("buildZxarggasFile", () => {
     const bLines = output.split("\r\n").filter((l) => l.startsWith("B"));
 
     expect(bLines).toHaveLength(5);
-    const coaByLedger = Object.fromEntries(
-      bLines.map((line) => {
-        const fields = line.split(";");
-        return [fields[2], fields[5]]; // LEDTYP -> COA
-      })
-    );
-    expect(coaByLedger).toEqual({ 1: "ARG", 2: "ARA", 4: "ARG", 5: "ARA", 6: "ARG" });
+    expect(bLines.map((line) => line.split(";")[2])).toEqual(["1", "2", "4", "5", "6"]);
   });
 });
 
@@ -129,14 +204,14 @@ describe("buildZxarggasFile — eje analítico (línea C)", () => {
     const lines = output.split("\r\n").filter((l) => l !== "");
 
     expect(lines).toEqual([
-      "A;AJU;;CEN;ODG;20260310;;Venta del mes;;;1;ARS;STDCO;1",
-      "B;1;1;1;CEN;ARG;;41010001;;Venta del mes;-1;500;ARS",
-      "B;1;2;1;CEN;ARA;;41010001;;Venta del mes;-1;500;ARS",
+      "A;AJU;;CEN;ODG;10032026;;;Venta del mes;;1;ARS;STDCO;1",
+      "B;1;1;1;CEN;;41010001;;Venta del mes;-1;500;ARS",
+      "B;1;2;1;CEN;;41010001;;Venta del mes;-1;500;ARS",
       "C;1;CCO;VEN",
-      "B;1;4;1;CEN;ARG;;41010001;;Venta del mes;-1;500;ARS",
-      "B;1;5;1;CEN;ARA;;41010001;;Venta del mes;-1;500;ARS",
+      "B;1;4;1;CEN;;41010001;;Venta del mes;-1;500;ARS",
+      "B;1;5;1;CEN;;41010001;;Venta del mes;-1;500;ARS",
       "C;1;CCO;VEN",
-      "B;1;6;1;CEN;ARG;;41010001;;Venta del mes;-1;500;ARS",
+      "B;1;6;1;CEN;;41010001;;Venta del mes;-1;500;ARS",
     ]);
   });
 
@@ -231,7 +306,7 @@ describe("buildZxarggasFile — Debe/Haber zero means empty", () => {
   function firstBSnsAmtcur(output) {
     const bLine = output.split("\r\n").find((l) => l.startsWith("B"));
     const fields = bLine.split(";");
-    return { sns: fields[10], amtcur: fields[11] };
+    return { sns: fields[9], amtcur: fields[10] };
   }
 
   it("treats debe=0 with haber=100 as a haber line (SNS=-1, amtcur=100)", () => {
