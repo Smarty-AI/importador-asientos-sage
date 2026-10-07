@@ -269,3 +269,125 @@ describe("validateBatch — Debe/Haber zero handling", () => {
     expect(errors.some((e) => e.message.toLowerCase().includes("no numérico"))).toBe(true);
   });
 });
+
+describe("validateBatch - balance por asiento (warning)", () => {
+  function balanceWarnings(groups) {
+    return validateBatch(groups, CATALOG).warnings.filter((w) => w.field === "balance");
+  }
+
+  it("no warning when the entry balances", () => {
+    const groups = [
+      group(
+        1,
+        [
+          validLine({ debe: 1000, haber: null }),
+          validLine({ codigoCuenta: "21010009", debe: null, haber: 1000 }),
+        ]
+      ),
+    ];
+
+    expect(balanceWarnings(groups)).toEqual([]);
+  });
+
+  it("warns with both totals and the exact difference when Debe exceeds Haber", () => {
+    const groups = [
+      group(
+        77,
+        [
+          validLine({ debe: 5220478729.49, haber: null }),
+          validLine({ codigoCuenta: "21010009", debe: null, haber: 5220478729.46 }),
+        ]
+      ),
+    ];
+
+    const warnings = balanceWarnings(groups);
+
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]).toMatchObject({ nOrden: 77, field: "balance", rowNumber: null });
+    expect(warnings[0].message).toBe(
+      "Asiento descuadrado: debe 5.220.478.729,49 - haber 5.220.478.729,46 " +
+        "= diferencia de 0,03 (mayor el debe)"
+    );
+  });
+
+  it("reports the side that is larger when Haber exceeds Debe", () => {
+    const groups = [
+      group(
+        2,
+        [
+          validLine({ debe: 100, haber: null }),
+          validLine({ codigoCuenta: "21010009", debe: null, haber: 100.5 }),
+        ]
+      ),
+    ];
+
+    const warnings = balanceWarnings(groups);
+
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0].message).toContain("= diferencia de 0,50 (mayor el haber)");
+  });
+
+  it("never reports floating point noise as a rounding difference", () => {
+    // 0.1 + 0.2 !== 0.3 in IEEE 754; the cent-based sum must not care.
+    const groups = [
+      group(
+        3,
+        [
+          validLine({ debe: 0.1, haber: null }),
+          validLine({ codigoCuenta: "21010009", debe: 0.2, haber: null }),
+          validLine({ codigoCuenta: "21010009", debe: null, haber: 0.3 }),
+        ]
+      ),
+    ];
+
+    expect(balanceWarnings(groups)).toEqual([]);
+  });
+
+  it("stays silent when a line amount is not numeric (blocking error owns it)", () => {
+    const groups = [
+      group(
+        4,
+        [
+          validLine({ debe: 100, haber: null }),
+          validLine({ codigoCuenta: "21010009", debe: null, haber: "abc" }),
+        ]
+      ),
+    ];
+
+    const { errors, warnings } = validateBatch(groups, CATALOG);
+
+    expect(errors.some((e) => e.message.toLowerCase().includes("no numérico"))).toBe(true);
+    expect(warnings.filter((w) => w.field === "balance")).toEqual([]);
+  });
+
+  it("treats a blank side as zero when totalling", () => {
+    const groups = [
+      group(
+        5,
+        [
+          validLine({ debe: 500, haber: null }),
+          validLine({ codigoCuenta: "21010009", debe: 250, haber: null }),
+          validLine({ codigoCuenta: "21010009", debe: null, haber: 750 }),
+        ]
+      ),
+    ];
+
+    expect(balanceWarnings(groups)).toEqual([]);
+  });
+
+  it("balance is a warning, never a blocking error", () => {
+    const groups = [
+      group(
+        6,
+        [
+          validLine({ debe: 100, haber: null }),
+          validLine({ codigoCuenta: "21010009", debe: null, haber: 99 }),
+        ]
+      ),
+    ];
+
+    const { errors } = validateBatch(groups, CATALOG);
+
+    expect(errors).toEqual([]);
+  });
+});

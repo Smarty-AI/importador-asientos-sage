@@ -26,9 +26,98 @@ export function validateBatch(groups, catalog) {
       collectBlockingErrors(line, errors);
       collectWarnings(line, catalog, warnings);
     }
+    collectBalanceWarning(group, warnings);
   }
 
   return { errors, warnings };
+}
+
+/**
+ * Entry-level balance check: the sum of Debe must equal the sum of Haber
+ * across the entry's source rows, otherwise SAGE rejects the entry (the
+ * field guide requires every asiento to balance).
+ *
+ * Computed on the SOURCE rows, never on the generated file: the builder
+ * repeats each accounting line once per ledger (3 times for patrimonial
+ * accounts, 5 for income/expense ones), so summing the file would compare
+ * unrelated totals.
+ *
+ * Arithmetic runs in integer cents so floating point noise never invents a
+ * difference that is not there — 0.1 + 0.2 style residue must not look like
+ * a rounding problem.
+ *
+ * Reported as a warning, not a blocking error: the user decided to see it
+ * without losing the ability to export, accepting that an unbalanced entry
+ * will be rejected by SAGE (or land unbalanced in the ledger). The tool
+ * never adjusts an amount on its own — moving cents silently would be an
+ * audit liability.
+ *
+ * @param {import("./parser.js").OrdenGroup} group
+ * @param {Issue[]} warnings
+ */
+function collectBalanceWarning(group, warnings) {
+  const lines = Array.isArray(group?.lines) ? group.lines : [];
+  if (lines.length === 0) return;
+
+  let debeCents = 0;
+  let haberCents = 0;
+  let computable = true;
+
+  for (const line of lines) {
+    const debe = toCents(line.debe);
+    const haber = toCents(line.haber);
+    if (debe === null || haber === null) {
+      computable = false;
+      break;
+    }
+    debeCents += debe;
+    haberCents += haber;
+  }
+
+  // A line already flagged as non-numeric or missing is a blocking error;
+  // reporting a balance difference on top of it would only add noise.
+  if (!computable || debeCents === haberCents) return;
+
+  const diffCents = debeCents - haberCents;
+  const side = diffCents > 0 ? "mayor el debe" : "mayor el haber";
+  warnings.push({
+    nOrden: group.nOrden,
+    rowNumber: null,
+    field: "balance",
+    message:
+      `Asiento descuadrado: debe ${formatAmount(debeCents)} - haber ${formatAmount(haberCents)}` +
+      ` = diferencia de ${formatAmount(Math.abs(diffCents))} (${side})`,
+  });
+}
+
+/**
+ * Amount to integer cents, or null when it is absent / not a finite number.
+ * Absent cells count as zero — the per-line presence check already owns
+ * the "both blank" and "not numeric" errors.
+ * @param {unknown} value
+ * @returns {number|null}
+ */
+function toCents(value) {
+  if (isBlank(value)) return 0;
+  const num = Number(String(value).trim());
+  if (!Number.isFinite(num)) return null;
+  return Math.round(num * 100);
+}
+
+/**
+ * Deterministic Argentine number format ("5.220.478.729,49") without
+ * depending on the runtime's ICU data, so the same input always renders
+ * the same string in the browser and in tests.
+ * @param {number} cents
+ * @returns {string}
+ */
+function formatAmount(cents) {
+  const negative = cents < 0;
+  const abs = Math.abs(cents);
+  const units = Math.floor(abs / 100);
+  const decimals = String(abs % 100).padStart(2, "0");
+  const grouped = String(units).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `${negative ? "-" : ""}${grouped},${decimals}`;
 }
 
 function collectBlockingErrors(line, errors) {
