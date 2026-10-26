@@ -227,23 +227,6 @@ function collectWarnings(line, catalog, warnings) {
         message: `Prefijo de cuenta no reconocido para ${line.codigoCuenta} — se exporta igual con los ledgers 1/4/6 (ARG)`,
       });
     }
-
-    // Cuentas de resultado (4/5): SAGE las tiene configuradas en el plan
-    // analitico, asi que exige un eje en cada linea que las use. El modelo de
-    // importacion no puede cargar ese eje (probado: reconoce la linea pero
-    // siempre responde "Distribucion descuadrada", y su grid no tiene campo de
-    // importe). Mientras eso siga asi, cualquier asiento con una cuenta 4/5 va
-    // a ser rechazado por SAGE — conviene avisarlo antes de subir el archivo y
-    // sacar este warning cuando el modelo acepte ejes.
-    const prefix = String(line.codigoCuenta).charAt(0);
-    if (prefix === "4" || prefix === "5") {
-      warnings.push({
-        nOrden,
-        rowNumber,
-        field: "codigoCuenta",
-        message: `La cuenta ${line.codigoCuenta} exige eje analítico en SAGE y el modelo de importación no puede cargarlo: este asiento va a ser rechazado (se importa recién cuando la cuenta deje de exigir eje)`,
-      });
-    }
   }
 }
 

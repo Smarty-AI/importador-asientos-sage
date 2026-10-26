@@ -25,18 +25,57 @@
  * row's own Concepto as the line DES, and a per-line sequential LIN/IDTLIN
  * (constant across that line's ledger repeats).
  *
- * "C" analytic-axis line: NOT EMITTED. Emitting one makes every entry that
- * touches an ARA ledger fail with error 25 ("Distribución descuadrada"), and
- * omitting it makes the same entries fail with error 97 ("Hay que indicar al
- * menos un eje") — the installed model accepts neither, because the eje grid
- * (GACCENTRYA: ANALIN, DIE, CCE) has no field for the distribution amount.
- * The way out is `ledger-rules.js`: only ledgers 1/4/6 are emitted, so no
- * line ever needs an axis. See that module for the measured evidence.
+ * "C" analytic-axis line: emitted after EVERY ARA-ledger repeat (2 and 5),
+ * with the full 11-field grid confirmed against the model's own export:
+ *
+ *   C;ANALIN;DIE;CCE(1);CCE(2);CCE(3);AMTLED;CANTIDAD;AMTCUR;CUR;CURLED
+ *
+ * The block carries the distribution amount (AMTLED/AMTCUR) — that field is
+ * what the earlier model revision lacked, which is why every eje variant was
+ * rejected with error 25 "Distribución descuadrada" while a no-eje entry
+ * answered error 97/99. With the amount present the distribution balances:
+ * verified on 94,078 eje lines of a fresh model export where the section
+ * amounts always sum to the accounting line's amount (40,749 blocks after
+ * ledger 2 and 40,749 after ledger 5, zero mismatches).
+ *
+ * Rules measured on that export: ANALIN numbers the sections inside the block
+ * (1..k; we always emit one); CANTIDAD is always 0; DIE is always CCO; and for
+ * a single-currency entry AMTLED == AMTCUR == the line amount with
+ * CUR == CURLED.
+ *
+ * Section values (all proven against the historical export): income accounts
+ * (prefix 4) post CCE(1)=VEN and CCE(2)=PVE (the dominant combination,
+ * 33,062 occurrences); CMV and tax accounts (5101/5102) post CCE(1)=ADM with
+ * CCE(2) empty; the remaining expense accounts post CCE(1) empty and
+ * CCE(2)=PVE.
  */
 
 import { getLedgerMapping } from "./ledger-rules.js";
 
 const FIXED_RATMLT = "1";
+
+// Eje analítico: código de eje y cantidad fija, según el export del modelo
+// (94.078 líneas: DIE=CCO siempre, CANTIDAD=0 siempre).
+const EJE_CODE = "CCO";
+const EJE_CANTIDAD = "0";
+
+/**
+ * Section values of the eje line, by account. Every combination is present in
+ * the model's own export for these same accounts:
+ * - 4xxx (ingresos): CCE(1)=VEN + CCE(2)=PVE — the dominant combination
+ *   (33,062 occurrences on account 41010001 alone).
+ * - 5101/5102 (CMV e impuestos): CCE(1)=ADM, CCE(2) empty.
+ * - Remaining 5xxx (gastos): CCE(1) empty, CCE(2)=PVE.
+ * @param {unknown} codigoCuenta
+ * @returns {{ cce1: string, cce2: string }}
+ */
+function resolveSeccionesEje(codigoCuenta) {
+  const code = String(codigoCuenta);
+  const prefix = code.charAt(0);
+  if (prefix === "4") return { cce1: "VEN", cce2: "PVE" };
+  if (code.startsWith("5101") || code.startsWith("5102")) return { cce1: "ADM", cce2: "" };
+  return { cce1: "", cce2: "PVE" };
+}
 
 /**
  * @param {import("./parser.js").OrdenGroup[]} groups
@@ -121,6 +160,18 @@ function buildDetailLines(group, batchConfig) {
         batchConfig.CUR, // CUR ("Divisa de asiento"): line currency, batch-fixed to "ARS"
       ];
       detailLines.push("B;" + fields.join(";"));
+
+      // Todo repeat ARA (2/5) lleva su bloque de eje con el importe completo
+      // de la linea. Sin importe la distribucion no cuadra y SAGE responde
+      // error 25; si el bloque va tras otro ledger, SAGE lo ignora y responde
+      // 99.
+      if (mapping.coaByLedger[ledger] === "ARA") {
+        const { cce1, cce2 } = resolveSeccionesEje(line.codigoCuenta);
+        const amt = String(amtcur);
+        detailLines.push(
+          `C;1;${EJE_CODE};${cce1};${cce2};;${amt};${EJE_CANTIDAD};${amt};${batchConfig.CUR};${batchConfig.CUR}`
+        );
+      }
     }
   });
 

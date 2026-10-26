@@ -154,36 +154,97 @@ describe("buildZxarggasFile", () => {
     expect(bFields[5]).toBe(""); // SAC always blank
     expect(bFields[7]).toBe(""); // BPR always blank
   });
+});
 
-  it("expands every account — including 4/5 prefix — into ledgers 1,4,6 and no eje line", () => {
-    const groups = [
-      {
-        nOrden: 2,
-        lines: [
-          {
-            nOrden: 2,
-            fecha: "2026-01-20",
-            concepto: "Gasto de ajuste",
-            codigoCuenta: "41010001",
-            debe: 250,
-            haber: null,
-          },
-        ],
-      },
-    ];
+describe("buildZxarggasFile — eje analítico (línea C, 11 campos)", () => {
+  function linea(nOrden, codigoCuenta, { debe = 100, haber = null, fecha = "2026-03-10", concepto = "Ajuste" } = {}) {
+    return {
+      nOrden,
+      fecha,
+      concepto,
+      codigoCuenta,
+      debe,
+      haber,
+    };
+  }
+
+  function lineasC(output) {
+    return output.split("\r\n").filter((l) => l.startsWith("C;"));
+  }
+
+  it("expands a 4/5 account into 5 ledgers and emits one eje block after each ARA repeat", () => {
+    const groups = [{ nOrden: 2, lines: [linea(2, "51050001")] }];
 
     const output = buildZxarggasFile(groups, BATCH_CONFIG, new Map());
     const lines = output.split("\r\n").filter((l) => l !== "");
 
     expect(lines).toEqual([
-      "A;AJU;;CEN;ODG;20012026;;;Gasto de ajuste;;2;ARS;STDCO;1",
-      "B;1;1;1;CEN;;41010001;;Gasto de ajuste;1;250;ARS",
-      "B;1;4;1;CEN;;41010001;;Gasto de ajuste;1;250;ARS",
-      "B;1;6;1;CEN;;41010001;;Gasto de ajuste;1;250;ARS",
+      "A;AJU;;CEN;ODG;10032026;;;Ajuste;;2;ARS;STDCO;1",
+      "B;1;1;1;CEN;;51050001;;Ajuste;1;100;ARS",
+      "B;1;2;1;CEN;;51050001;;Ajuste;1;100;ARS",
+      "C;1;CCO;;PVE;;100;0;100;ARS;ARS",
+      "B;1;4;1;CEN;;51050001;;Ajuste;1;100;ARS",
+      "B;1;5;1;CEN;;51050001;;Ajuste;1;100;ARS",
+      "C;1;CCO;;PVE;;100;0;100;ARS;ARS",
+      "B;1;6;1;CEN;;51050001;;Ajuste;1;100;ARS",
     ]);
-    // No analytic-axis line: ledgers 2/5 (ARA) are never emitted, so nothing
-    // needs an eje and the model stops answering "Distribución descuadrada".
-    expect(lines.filter((l) => l.startsWith("C;"))).toEqual([]);
+  });
+
+  it("posts CCE(1)=VEN and CCE(2)=PVE for income accounts (4xxx)", () => {
+    const groups = [{ nOrden: 1, lines: [linea(1, "41010001", { debe: null, haber: 250 })] }];
+
+    const output = buildZxarggasFile(groups, BATCH_CONFIG, new Map());
+
+    expect(lineasC(output)).toEqual([
+      "C;1;CCO;VEN;PVE;;250;0;250;ARS;ARS",
+      "C;1;CCO;VEN;PVE;;250;0;250;ARS;ARS",
+    ]);
+  });
+
+  it("posts CCE(1)=ADM with CCE(2) empty for CMV and tax accounts (5101/5102)", () => {
+    const groups = [{ nOrden: 3, lines: [linea(3, "51020003")] }];
+
+    const output = buildZxarggasFile(groups, BATCH_CONFIG, new Map());
+
+    expect(lineasC(output)).toEqual([
+      "C;1;CCO;ADM;;;100;0;100;ARS;ARS",
+      "C;1;CCO;ADM;;;100;0;100;ARS;ARS",
+    ]);
+  });
+
+  it("posts CCE(1) empty and CCE(2)=PVE for the remaining expense accounts", () => {
+    for (const codigoCuenta of ["51030002", "51120003", "51050001"]) {
+      const groups = [{ nOrden: 4, lines: [linea(4, codigoCuenta)] }];
+
+      const output = buildZxarggasFile(groups, BATCH_CONFIG, new Map());
+
+      expect(lineasC(output)).toEqual([
+        "C;1;CCO;;PVE;;100;0;100;ARS;ARS",
+        "C;1;CCO;;PVE;;100;0;100;ARS;ARS",
+      ]);
+    }
+  });
+
+  it("emits no C line for patrimonial accounts (ledgers 1/4/6 only, no ARA)", () => {
+    const groups = [{ nOrden: 1, lines: [linea(1, "11010001")] }];
+
+    const output = buildZxarggasFile(groups, BATCH_CONFIG, new Map());
+
+    expect(lineasC(output)).toEqual([]);
+  });
+
+  it("carries the line amount in both amount fields and number-styles it like the B line", () => {
+    const groups = [{ nOrden: 5, lines: [linea(5, "51050001", { debe: 489583.25 })] }];
+
+    const output = buildZxarggasFile(groups, BATCH_CONFIG, new Map());
+    const cLine = lineasC(output)[0].split(";");
+    const bLine = output.split("\r\n").find((l) => l.startsWith("B;1;2;")).split(";");
+
+    expect(cLine[6]).toBe(bLine[10]); // AMTLED == AMTCUR de la linea
+    expect(cLine[8]).toBe(bLine[10]); // AMTCUR == AMTCUR de la linea
+    expect(cLine[7]).toBe("0"); // CANTIDAD
+    expect(cLine[9]).toBe("ARS");
+    expect(cLine[10]).toBe("ARS");
   });
 });
 

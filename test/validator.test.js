@@ -129,30 +129,7 @@ describe("validateBatch — non-blocking warnings", () => {
     expect(prefixWarning.message).not.toContain("ARA");
   });
 
-  it("warns on 4/5 accounts that SAGE will reject because the model cannot import the eje", () => {
-    for (const codigoCuenta of ["41010001", "51120003"]) {
-      const groups = [group(1, [validLine({ codigoCuenta })])];
-
-      const { errors, warnings } = validateBatch(groups, CATALOG);
-
-      expect(errors).toEqual([]);
-      const ejeWarning = warnings.find((w) => w.message.includes("eje analítico"));
-      expect(ejeWarning).toBeDefined();
-      expect(ejeWarning.message).toContain(codigoCuenta);
-      expect(ejeWarning.message).toContain("va a ser rechazado");
-    }
-  });
-
-  it("does not warn about the eje on patrimonial accounts", () => {
-    for (const codigoCuenta of ["11010001", "21010001", "31010008"]) {
-      const groups = [group(1, [validLine({ codigoCuenta })])];
-
-      const { warnings } = validateBatch(groups, CATALOG);
-
-      expect(warnings.some((w) => w.message.includes("eje analítico"))).toBe(false);
-    }
-  });
-
+  
   it("does not warn on prefix 3 (patrimonio neto, e.g. 31010008) since it maps to ARG-only ledgers", () => {
     const groups = [group(1, [validLine({ codigoCuenta: "31010008" })])];
 
